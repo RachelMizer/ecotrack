@@ -1,0 +1,19 @@
+App Description:
+
+EcoVitals is a next‑generation wildlife telemetry platform designed to give landowners, 
+conservation teams, and property managers a clear, real‑time understanding of animal activity 
+across their land. By combining precise movement tracking with continuous biometric monitoring, 
+EcoVitals delivers a complete picture of animal health, behavior, and habitat use — 
+all in one intuitive dashboard.
+
+Development Stack:
+Database - PostgreSQL
+Storage - Github
+Backend - Django/Python
+Backend Hosting - Railway
+Frontend - React.js
+Frontend Hosting - Netlify
+
+Landing Page:
+Hero Image w/animals
+Login field, password field, login button

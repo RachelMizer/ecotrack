@@ -1,0 +1,22 @@
+.map-wrap { position: relative; border: 2px solid var(--brown); background: #e3ead6; }
+.farm-map { display: block; width: 100%; height: auto; aspect-ratio: 1000 / 650; }
+.area rect { fill: rgba(255, 253, 249, 0); stroke: var(--brown); stroke-width: 1.5; stroke-dasharray: 6 4; cursor: zoom-in; transition: fill .15s; }
+.area:hover rect, .area:focus rect { fill: rgba(255, 253, 249, .35); }
+.area:focus { outline: none; }
+.area:focus rect { stroke: var(--teal); stroke-width: 3; }
+.area.current rect { cursor: zoom-out; stroke: none; fill: none; }
+.area-label { font-family: var(--font-sub); fill: var(--bark); letter-spacing: .08em; pointer-events: none; }
+.zone rect { stroke: var(--bark); stroke-width: 1.2; }
+.zone.pasture rect, .zone.enclosure rect { fill: rgba(107, 137, 70, .12); stroke: #8a6a4f; stroke-width: 2.5; stroke-dasharray: 10 3; }
+.zone rect.run { fill: rgba(169, 140, 133, .12); stroke: #a98c85; stroke-width: 1; stroke-dasharray: 3 3; }
+.zone-label { font-family: var(--font-sub); fill: var(--bark); paint-order: stroke; stroke: rgba(255, 253, 249, .85); stroke-width: 3px; }
+.dot { cursor: pointer; }
+.dot:hover circle:nth-child(2), .dot:focus circle:nth-child(2) { stroke: var(--bark); }
+.dot:focus { outline: none; }
+.dot-label { font-family: var(--font-body); fill: var(--ink); paint-order: stroke; stroke: #fffdf9; stroke-width: 3px; pointer-events: none; }
+.map-tip { position: absolute; pointer-events: none; z-index: 2; min-width: 150px; }
+.species-toggles { display: flex; gap: .9rem; flex-wrap: wrap; }
+.check { display: inline-flex; align-items: center; gap: .35rem; font-size: .9rem; cursor: pointer; }
+.check i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.zone-label, .dot-label { stroke-linejoin: round; }
+.filters label.check { flex-direction: row; text-transform: none; letter-spacing: 0; font-family: var(--font-body); font-size: .9rem; color: var(--ink); }

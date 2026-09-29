@@ -1,0 +1,210 @@
+/*
+ * Brand fonts. Milky Vintage and A Pompadour are commercial fonts and are not
+ * bundled. Drop licensed files into /public/fonts with these names and they are
+ * picked up automatically; until then Caprasimo and Jost (Google Fonts) stand in.
+ */
+@font-face {
+  font-family: "Milky Vintage";
+  src: local("Milky Vintage"), url("/fonts/MilkyVintage.woff2") format("woff2"),
+    url("/fonts/MilkyVintage.otf") format("opentype"), url("/fonts/MilkyVintage.ttf") format("truetype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "A Pompadour";
+  src: local("A Pompadour"), url("/fonts/APompadour.woff2") format("woff2"),
+    url("/fonts/APompadour.otf") format("opentype"), url("/fonts/APompadour.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  /* Brand palette (design brief) */
+  --cream: #fffdf9;
+  --green: #6b8946;
+  --teal: #467f89;
+  --mauve: #a98c85;
+  --brown: #7e5044;
+  --bark: #4b2c24;
+
+  /* Tints for tiles and surfaces */
+  --green-tint: #dde6d1;
+  --teal-tint: #dbeff2;
+  --mauve-tint: #efe6e3;
+  --line: #e6dcd6;
+  --surface: #ffffff;
+
+  /* Text */
+  --ink: #3a241d;
+  --ink-2: #6e5a53;
+  --ink-3: #8f7c75;
+
+  /* Chart series: species (validated for CVD separation on --cream) */
+  --chicken: #008a9e;
+  --cow: #94472f;
+  --pig: #5b8a26;
+
+  /* Status (always paired with an icon + label) */
+  --critical: #b3261e;
+  --critical-tint: #fbe4e1;
+  --warning: #9a6200;
+  --warning-tint: #fdf0d8;
+  --good: #3f6e2a;
+  --good-tint: #e4efdc;
+
+  --font-head: "Milky Vintage", "Caprasimo", Georgia, serif;
+  --font-sub: "A Pompadour", "Jost", "Futura", "Century Gothic", sans-serif;
+  --font-body: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+
+  --radius: 6px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+a { color: var(--teal); }
+button, input, select { font: inherit; color: inherit; }
+img { max-width: 100%; }
+
+h1, h2.head { font-family: var(--font-head); color: var(--brown); font-weight: 400; line-height: 1.15; }
+h1 { font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 .5rem; text-align: center; }
+h2, h3, .sub {
+  font-family: var(--font-sub); color: var(--teal); font-weight: 500;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+h2 { font-size: 1.3rem; margin: 2.5rem 0 1rem; text-align: center; }
+h3 { font-size: 1rem; margin: 0 0 .5rem; }
+.muted { color: var(--ink-2); }
+.small { font-size: .85rem; }
+.tabular { font-variant-numeric: tabular-nums; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* ------------------------------------------------------------------ layout */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.site-header { background: var(--surface); border-bottom: 1px solid var(--line); padding: 1rem 16px .6rem; }
+.brand { display: flex; align-items: center; justify-content: center; gap: .9rem; text-decoration: none; }
+/* logo.png carries its own wordmark underneath; crop to the emblem so the header shows it once */
+.brand .mark { height: 60px; overflow: hidden; display: block; }
+.brand .mark img { height: 100px; width: auto; margin-top: -12px; display: block; }
+.brand .word { font-family: var(--font-head); font-size: 2.2rem; letter-spacing: .02em; }
+.brand .eco { color: var(--green); }
+.brand .track { color: var(--brown); }
+.nav { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: .4rem 2.2rem; margin-top: .6rem; }
+.nav a {
+  font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .05em;
+  color: var(--green); text-decoration: none; font-size: 1.02rem; padding: .2rem 0;
+}
+.nav a.active { color: var(--teal); text-decoration: underline; text-underline-offset: 4px; }
+.nav a:hover { color: var(--teal); }
+.nav .acct { display: flex; gap: .8rem; margin-left: 1rem; }
+.nav .acct a, .nav .acct button {
+  font-family: var(--font-body); text-transform: none; letter-spacing: 0; font-size: .85rem; color: var(--brown);
+  background: none; border: 0; padding: 0; cursor: pointer;
+}
+.nav .acct a.active { color: var(--teal); }
+
+main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 2rem 16px 3rem; }
+.tagline { text-align: center; margin: -.2rem 0 1.5rem; color: var(--ink-2); }
+
+.site-footer {
+  border-top: 1px solid var(--line); background: var(--surface); padding: 1.1rem 16px;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.5rem; font-size: .9rem; color: var(--ink-2);
+}
+.site-footer a { color: var(--brown); }
+
+/* ------------------------------------------------------------------ controls */
+.filters { display: flex; flex-wrap: wrap; align-items: end; gap: .6rem 1rem; margin: 0 0 1rem; }
+.filters label { display: flex; flex-direction: column; gap: .15rem; font-family: var(--font-sub);
+  text-transform: uppercase; font-size: .72rem; letter-spacing: .06em; color: var(--bark); }
+select, input[type="date"], input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="search"] {
+  border: 1px solid var(--mauve); border-radius: 4px; background: var(--surface);
+  padding: .35rem .5rem; font-size: .9rem; min-height: 34px;
+}
+select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.link-btn { background: none; border: 0; color: var(--teal); cursor: pointer; font-family: var(--font-sub);
+  text-transform: uppercase; font-size: .78rem; letter-spacing: .06em; padding: .4rem 0; }
+.link-btn:disabled { color: var(--ink-3); cursor: default; }
+.btn {
+  background: var(--brown); color: #fff; border: 0; border-radius: 4px; padding: .55rem 1.2rem; cursor: pointer;
+  font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .06em;
+}
+.btn:hover { background: var(--bark); }
+.btn.secondary { background: var(--surface); color: var(--brown); border: 1px solid var(--brown); }
+.segmented { display: inline-flex; border: 1px solid var(--mauve); border-radius: 4px; overflow: hidden; }
+.segmented button { border: 0; background: var(--surface); padding: .35rem .8rem; cursor: pointer; font-size: .85rem; }
+.segmented button[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+/* ------------------------------------------------------------------ cards & panels */
+.panel { background: var(--surface); border: 2px solid var(--brown); border-radius: 2px; padding: 1rem 1.2rem; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; }
+.grid { display: grid; gap: 1rem; }
+.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.tile { border-radius: 2px; padding: 1rem 1.1rem; min-height: 180px; }
+.tile.green { background: var(--green-tint); }
+.tile.teal { background: var(--teal-tint); }
+.tile.mauve { background: var(--mauve-tint); }
+.stat { font-family: var(--font-head); color: var(--bark); font-size: 2.2rem; line-height: 1; }
+.stat-label { font-size: .85rem; color: var(--ink-2); }
+.stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+
+/* status pill: icon + label, never color alone */
+.pill { display: inline-flex; align-items: center; gap: .3rem; border-radius: 999px; padding: .05rem .55rem;
+  font-size: .78rem; font-weight: 500; white-space: nowrap; }
+.pill.sick, .pill.critical { background: var(--critical-tint); color: var(--critical); }
+.pill.recovering, .pill.warning, .pill.scheduled { background: var(--warning-tint); color: var(--warning); }
+.pill.healthy, .pill.good, .pill.completed { background: var(--good-tint); color: var(--good); }
+.pill.active { background: var(--teal-tint); color: #1f5f69; }
+.pill.neutral { background: var(--mauve-tint); color: var(--bark); }
+
+/* ------------------------------------------------------------------ tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th { font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .05em; font-size: .75rem;
+  color: var(--bark); text-align: left; background: var(--mauve-tint); font-weight: 500; }
+th, td { padding: .5rem .7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+.pager { display: flex; gap: 1rem; align-items: center; justify-content: flex-end; margin-top: .5rem; font-size: .85rem; }
+
+/* ------------------------------------------------------------------ charts */
+.chart-panel { background: var(--surface); border: 2px solid var(--brown); padding: 1rem .5rem .5rem; }
+.chart-title { font-family: var(--font-sub); text-transform: uppercase; color: var(--bark); font-size: .95rem;
+  letter-spacing: .05em; margin: 0 .8rem .4rem; }
+.recharts-label, .recharts-cartesian-axis-tick text { font-family: var(--font-sub); }
+.recharts-label { text-transform: uppercase; letter-spacing: .06em; fill: var(--bark) !important; font-size: 12px; }
+.recharts-cartesian-axis-tick text { fill: var(--ink-2); font-size: 11px; }
+.legend { display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; font-size: .85rem; margin: .3rem .8rem .5rem; color: var(--ink); }
+.legend span { display: inline-flex; align-items: center; gap: .35rem; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.tooltip { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: .5rem .7rem;
+  box-shadow: 0 4px 14px rgba(75, 44, 36, .12); font-size: .85rem; }
+.tooltip strong { font-size: 1rem; }
+.chart-empty { padding: 3rem 1rem; text-align: center; color: var(--ink-2); }
+.loading { opacity: .5; transition: opacity .2s; }
+
+/* ------------------------------------------------------------------ misc */
+.photo-ph {
+  aspect-ratio: 1; width: 100%; display: grid; place-items: center; text-align: center;
+  background: repeating-linear-gradient(45deg, var(--mauve-tint), var(--mauve-tint) 8px, #f6f0ee 8px, #f6f0ee 16px);
+  border: 1px dashed var(--mauve); border-radius: 4px; color: var(--bark);
+}
+.photo-ph b { font-family: var(--font-head); font-size: 2rem; display: block; font-weight: 400; }
+.photo-ph small { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); }
+.photo { aspect-ratio: 1; width: 100%; object-fit: cover; border-radius: 4px; display: block; }
+.error { background: var(--critical-tint); color: var(--critical); border-radius: 4px; padding: .6rem .9rem; }
+.back { display: inline-block; margin-bottom: 1rem; font-size: .9rem; }
+
+@media (max-width: 640px) {
+  .brand .mark { height: 45px; }
+  .brand .mark img { height: 75px; margin-top: -9px; }
+  .brand .word { font-size: 1.7rem; }
+  .nav { gap: .3rem 1.1rem; }
+  .nav .acct { margin-left: 0; }
+  main { padding-top: 1.2rem; }
+}

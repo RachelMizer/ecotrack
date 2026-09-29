@@ -1,0 +1,56 @@
+App / Service name: EcoTrack
+Tagline: Where animal health meets land insight
+
+App Description: EcoTrack is a real‑time livestock tracking and health‑monitoring platform built for farms that need clarity, efficiency, 
+    and dependable oversight. Designed specifically for cows, pigs, and chickens, EcoTrack maps animal movement across your property, showing live 
+    and historical location trails so you can understand grazing patterns, roaming behavior, and activity levels at a glance. Each animal has a 
+    dedicated profile where you can record and update vital statistics such as temperature, weight, and other key health indicators, making it easy 
+    to monitor wellbeing over time and respond quickly to changes.
+
+    EcoTrack also manages feeding stations, tracking their contents, usage rates, and refill schedules to ensure consistent nutrition and reduce 
+    manual checks. By unifying movement data, biometric insights, and feeding‑resource management, EcoTrack gives farmers a clear, actionable 
+    view of their livestock operations — supporting healthier animals, more efficient workflows, and smarter land stewardship.
+
+Design:
+    Refer to the design brief in the dev folder.
+    Headers should be in Milky Vintage.
+    Subheaders and section headers as well as axis labels for graphs/charts/tables should be in A Pompadour
+    Footer should have a copyright with Rachel Mizer as the copyright holder. Footer should also have a link "Developer's Notes" which is a page 
+    that has descriptions and lists of scripts and frameworks used for the project.
+
+Data:
+In /dev/animal data:
+    Refer to Chickens.txt, Cows.txt, and Pigs.txt for information on farm-specific animal data.
+    Refer to Chickens info.txt, Cows info.txt, and Pigs info.txt for information about the animals that can be used to create stats, charts and graphs.
+
+Pages:
+    0) Login Page. This should show the chickens background and a basic login form.
+    1) Dashboard: Shows filterable charts and graphs related to the data stored on the site
+    2) Catalog: This page should have three buttons "Cows", "Pigs", "Chickens". Each button should lead to an indvidual page for each animal group.
+    Each page should have a list of the animals of that type. Each animal should have their individual picture and list of stats. The weight stat and the 
+    temperature stat should have a link beside each that links to a table showing that animal's individual weight stats and temperature stats individually.
+    The tables on those pages should be filterable. Weights for all animals start at birth/hatching and are taken each week. Temperatures are taken every 
+    two days for all animals.
+    3) Tracker: A location map of the farm that shows the movement of each animal (as they are tagged with trackers). Clicking a dot should take someone to the 
+    animal group page for that animal type--for example, clicking "Amy"'s dot should take a user to the Chickens catalog page and Amy the chicken's entry on that page.
+    The map should have subareas that users can click on to view a zoomed in section of the map that shows the coops area, pens area and enclosure areas.
+    4) Nutrition: This page should show the amounts of feed in each of the feeders on the farm. Types of feed should be listed for each feeder as well. It should show
+    what vaccinations and medications each of the animals are getting.
+    5) Schedule: Schedule should show the feeding and medication schedule for each animal. Feed and medicine should change based on what type of animal it is, what its
+    age is, and its fertility status--whether an animal is pregnant, breast-feeding / milk-feeding babies.
+    6) Account: This page should show the user their account information.
+
+Notes:
+
+    If there is a space that needs an animal photo and one cannot be generated or gotten by the AI, a square placeholder can be used and an image needs text file should be generated
+    to let me know how many images are needed for the site.
+
+    Some of the animals should be sick and/or have been sick during their lifetime. Not ALL animals, but definitely some of them. There should be temperature changes
+    and medication changes based on the needs of the animal at the time. Any records on the site / in the database should reflect these needs. If any medication suggestions are
+    needed, let me know.
+
+    If any information is missing from the documentation provided, I can provide more information. Otherwise, use search engines to fill in missing information.
+
+    For many graphs, scatterplots will be ideal.
+
+    Graphs should be filterable and filters should be clearable as well.

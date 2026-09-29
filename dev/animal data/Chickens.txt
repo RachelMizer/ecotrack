@@ -1,0 +1,38 @@
+Chickens:
+(Please assign random weights)
+
+Hens
+(Gender, Name, Breed, Age, Fertility Status, Egg Count Month-to-date, Weight, Location)
+Hen, Elizabeth, Golden Comet, 1 yr, Laying, 13, Longbourn Coop
+Hen, Jane, White Leghorn, 1 yr, Brooding, 15, Longbourn Coop
+Hen, Lydia, Golden Comet, 1 yr, Laying, 12, Longbourn Coop
+Hen, Kitty, White Leghorn, 1 yr, Brooding, 12, Longbourn Coop
+Hen, Mary, Golden Comet, 1 yr, Brooding, 9, Longbourn Coop
+
+Hen, Jo, Isa Red, 1 yr, Brooding, 18, Orchard Coop
+Hen, Meg, Isa Red, 1 yr, Brooding, 12, Orchard Coop
+Hen, Beth, Isa Red, 1 yr, Laying, 10, Orchard Coop
+Hen, Amy, Isa Red, 1 yr, Laying, 20, Orchard Coop
+
+Chicks and Teenagers
+(Gender, Name, Breed, Age in Days, Weight, Location)
+Hen Chick, Wendy, Golden Comet, 12 days, Neverland Brooder
+Hen Chick, Moira, Golden Comet, 12 days, Neverland Brooder
+Rooster Chick, John, Isa Red, 12 days, Neverland Brooder
+Rooster Chick, Michael, White Leghorn, 12 days, Neverland Brooder
+Rooster Chick, Peter, White Leghorn, 12 days, Neverland Brooder
+
+Hen Teen, Daisy, Golden Comet, 18 days, Frat House Coop
+Hen Teen, Poppy, White Leghorn, 18 days, Frat House Coop
+Hen Teen, Iris, White Leghorn, 18 days, Frat House Coop
+Hen Teen, Rose, Golden Comet, 16 days, Frat House Coop
+Hen Teen, Violet, Isa Brown, 16 days, Frat House Coop
+Hen Teen, Petunia, Isa Brown, 16 days, Frat House Coop
+
+Rooster Teen, Harry, Isa Brown, 15 days, Frat House Coop
+Rooster Teen, Ron, White Leghorn, 15 days, Frat House Coop
+
+(Gender, Name, Breed, Age, Weight, Location)
+Rooster, Darcy, Golden Comet, 1 yr, Longbourn Coop
+Rooster, Fred, White Leghorn, 1 yr 3 mnths, Orchard Coop
+Rooster, Lawrence, Isa Brown, 1 yr 8 mnths, Orchard Coop
