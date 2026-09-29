@@ -15,6 +15,21 @@ Wildlife telemetry platform: movement tracking and biometric monitoring for land
 
 ---
 
+## Pending: Site 1 machine
+> **Reminder (any site):** when asked for the project status, remind the user of every unchecked step below before anything else.
+> Once the user confirms a step is done, check it off here and add a log entry.
+
+Site 2 pushed `d4296cb` (incubator catalog page, plus `0f13fdd` Ham Solo rename). Site 1's database still has the old schema and data. Run these on the **Site 1 machine**:
+
+- [ ] `git pull` in `Desktop\EcoTrack` (should bring `main` to `d4296cb` or later)
+- [ ] In `backend/`: `python manage.py migrate` (applies `0002_incubator`, the new incubator tables)
+- [ ] In `backend/`: `python manage.py seed_farm --keep-user` (reseeds all farm data: incubator eggs and Ham Solo's new name)
+- [ ] Restart the API (`python manage.py runserver`) and the web app (`npm run dev` in `frontend/`), then log in and check that Catalog shows an **Incubator** button with 10 eggs and that the Pigs page lists **Ham Solo**
+
+No new Python or npm packages, so `pip install` and `npm install` aren't needed.
+
+---
+
 ## Log
 
 ### 2026-09-27
@@ -49,6 +64,7 @@ Wildlife telemetry platform: movement tracking and biometric monitoring for land
 - Account page: removed the "change your password in the Django admin" note
 - Catalog: added an **Incubator** section (`/catalog/incubator`). New `Incubator` / `IncubatorEgg` models (migration `0002_incubator`) and `/api/incubators/` endpoint. Each egg shows the hen that laid it, color, size and weight, shell, candling result, days in the incubator, projected hatch date (set date + 21 days) and last checked date. Seeded 10 eggs in the 12-slot Neverland Incubator (two batches). Re-ran `seed_farm`
 - Dashboard: tightened padding on the status pills in the Health tile's "Needs attention" list
+- Committed and pushed to GitHub as `d4296cb` ("Add incubator to catalog; tidy account page and dashboard pills"). The push also brought up `0f13fdd` (Ham Solo rename), which hadn't been pushed yet. Site 1 needs to migrate and reseed (see **Pending: Site 1 machine** above)
 
 ---
 
@@ -56,4 +72,4 @@ Wildlife telemetry platform: movement tracking and biometric monitoring for land
 - [ ] Add 44 photos listed in `images_needed.txt` (login chicken background + one per animal)
 - [ ] Add licensed Milky Vintage / A Pompadour font files to `frontend/public/fonts/`
 - [ ] Review `medication_suggestions.md` and name the unnamed heifer calf
-- [ ] Push to GitHub, deploy API to Railway (Postgres) and web to Netlify
+- [ ] Deploy API to Railway (Postgres) and web to Netlify (code is on GitHub; run `migrate` and `seed_farm` on Railway after the first deploy)
