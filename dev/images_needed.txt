@@ -26,13 +26,13 @@ code change to make. Until a file exists, a striped "Photo needed" square is sho
 
    Pigs (10)
      bacon-bill.jpg           Bacon Bill (Boar Piglet, Red Wattle Hog)
+     ham-solo.jpg             Ham Solo (Boar Piglet, Red Wattle Hog)
      hamela-anderson.jpg      Hamela Anderson (Sow, Red Wattle Hog)
      hamlet.jpg               Hamlet (Boar Piglet, Red Wattle Hog)
      hogatha-christie.jpg     Hogatha Christie (Sow Piglet, Red Wattle Hog)
      hogwarts.jpg             Hogwarts (Boar Piglet, Red Wattle Hog)
      kevin-bacon.jpg          Kevin Bacon (Boar, Mulefoot Hog)
      piggy-minaj.jpg          Piggy Minaj (Sow Piglet, Red Wattle Hog)
-     pork-solo.jpg            Pork Solo (Boar Piglet, Red Wattle Hog)
      porkahontas.jpg          Porkahontas (Sow Piglet, Red Wattle Hog)
      sir-oinks-a-lot.jpg      Sir Oinks-A-Lot (Boar Piglet, Red Wattle Hog)
 
