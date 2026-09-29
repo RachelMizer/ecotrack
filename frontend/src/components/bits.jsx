@@ -37,9 +37,9 @@ export function Pager({ page, pages, onPage, total }) {
   return (
     <div className="pager">
       <span className="muted">{total} records</span>
-      <button className="link-btn" disabled={page <= 1} onClick={() => onPage(page - 1)}>← Prev</button>
+      <button className="link-btn arrow-link" disabled={page <= 1} onClick={() => onPage(page - 1)}>← Prev</button>
       <span className="tabular">Page {page} of {pages}</span>
-      <button className="link-btn" disabled={page >= pages} onClick={() => onPage(page + 1)}>Next →</button>
+      <button className="link-btn arrow-link" disabled={page >= pages} onClick={() => onPage(page + 1)}>Next →</button>
     </div>
   )
 }

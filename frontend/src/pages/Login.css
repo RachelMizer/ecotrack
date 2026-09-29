@@ -1,20 +1,22 @@
 .login-page { min-height: 100vh; display: flex; flex-direction: column; }
 .login-hero {
   flex: 1; display: grid; place-items: center; padding: 2rem 16px;
-  /* Chicken background photo: add /public/images/login-chickens.jpg (see dev/images_needed.txt).
-     Until then the gradient below shows through. */
-  background:
-    linear-gradient(rgba(75, 44, 36, .25), rgba(75, 44, 36, .35)),
-    url("/images/login-chickens.jpg") center / cover no-repeat,
-    linear-gradient(160deg, #a98c85 0%, #6b8946 55%, #467f89 100%);
+  /* Photo is two chickens on white (from dev/img/chickens.jpeg); the empty centre holds the card. */
+  background: #fff url("/images/login-chickens.jpg") center bottom / cover no-repeat;
 }
 .login-card {
-  width: min(380px, 100%); background: #fff; border-radius: 8px; padding: 1.6rem 1.6rem 1.8rem;
-  box-shadow: 0 12px 40px rgba(40, 20, 15, .3); display: flex; flex-direction: column; gap: .9rem;
+  width: min(380px, 100%); background: #fff; border-radius: 8px; padding: 1.4rem 1.6rem 1.6rem;
+  border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(75, 44, 36, .12); display: flex; flex-direction: column; gap: .9rem;
 }
-.login-logo { width: 200px; margin: 0 auto; display: block; }
-.login-tagline { text-align: center; margin: -.4rem 0 .4rem; font-family: var(--font-sub); color: var(--teal); }
+/* logo.png has ~24px of blank space above and below the artwork at this size */
+.login-logo { width: 200px; margin: -20px auto -22px; display: block; }
 .login-card label { display: flex; flex-direction: column; gap: .25rem; font-family: var(--font-sub);
   text-transform: uppercase; font-size: .78rem; letter-spacing: .06em; color: var(--bark); }
 .login-card input { font-size: 1rem; }
 .login-card .btn { margin-top: .4rem; padding: .7rem; }
+
+/* Narrow screens: "cover" would crop to the empty middle of the photo, so show the
+   chickens along the bottom instead and put the card above them. */
+@media (max-width: 700px) {
+  .login-hero { background-size: 165% auto; background-position: center bottom; place-items: start center; padding-bottom: 55vw; }
+}

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Footer } from '../components/Layout'
 import { useAuth } from '../lib/auth'
 import './Login.css'
 
@@ -32,7 +31,6 @@ export default function Login() {
       <div className="login-hero">
         <form className="login-card" onSubmit={onSubmit}>
           <img src="/images/logo.png" alt="EcoTrack" className="login-logo" />
-          <p className="login-tagline">Where animal health meets land insight</p>
           <label>
             Username
             <input type="text" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
@@ -45,7 +43,6 @@ export default function Login() {
           <button className="btn" type="submit" disabled={busy}>{busy ? 'Logging in…' : 'Log in'}</button>
         </form>
       </div>
-      <Footer />
     </div>
   )
 }

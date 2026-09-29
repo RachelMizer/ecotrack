@@ -130,7 +130,13 @@ export default function Tracker() {
               role="button" tabIndex={0} aria-label={`Zoom to ${v.label}`}
               onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setArea(area === k ? '' : k)}>
               <rect x={v.box.x} y={v.box.y} width={v.box.w} height={v.box.h} rx="6" />
-              {!area && <text x={v.box.x + 10} y={v.box.y + 22} className="area-label" fontSize={16}>{v.label.toUpperCase()}</text>}
+              {!area && (
+                // White tab sitting on the dashed border so the label reads over fences and trails.
+                <g className="area-tag" pointerEvents="none">
+                  <rect x={v.box.x + 12} y={v.box.y - 13} width={v.label.length * 12.5 + 22} height={26} rx="4" />
+                  <text x={v.box.x + 23} y={v.box.y + 6} className="area-label" fontSize={16}>{v.label.toUpperCase()}</text>
+                </g>
+              )}
             </g>
           ))}
 
@@ -142,8 +148,6 @@ export default function Tracker() {
               )}
               <rect x={z.x} y={z.y} width={z.width} height={z.height} rx="3"
                 fill={z.kind === 'coop' || z.kind === 'brooder' || z.kind === 'barn' ? 'url(#straw)' : 'none'} />
-              <text x={z.x + z.width / 2} y={z.kind === 'pasture' || z.kind === 'enclosure' ? z.y + z.height - 8 * scale : z.y - 5 * scale}
-                textAnchor="middle" fontSize={11 * Math.max(scale, 0.55)} className="zone-label">{z.name}</text>
             </g>
           ))}
 
@@ -153,6 +157,19 @@ export default function Tracker() {
               stroke={speciesByKey[a.species].hex} strokeOpacity={hover && hover.a.slug !== a.slug ? 0.12 : 0.45}
               strokeWidth={1.5 * scale} strokeLinejoin="round" pointerEvents="none" />
           ))}
+
+          {/* zone name tags, drawn above trails so they stay readable */}
+          {(zones.data || []).map((z) => {
+            const fs = 11 * Math.max(scale, 0.55)
+            const ty = z.kind === 'pasture' || z.kind === 'enclosure' ? z.y + z.height - 8 * scale : z.y - 5 * scale
+            const w = z.name.length * fs * 0.56 + fs
+            return (
+              <g key={`tag-${z.slug}`} className="zone-tag" pointerEvents="none">
+                <rect x={z.x + z.width / 2 - w / 2} y={ty - fs * 0.95} width={w} height={fs * 1.35} rx={fs * 0.3} />
+                <text x={z.x + z.width / 2} y={ty} textAnchor="middle" fontSize={fs} className="zone-label">{z.name}</text>
+              </g>
+            )
+          })}
 
           {/* current positions */}
           {animals.map((a) => {

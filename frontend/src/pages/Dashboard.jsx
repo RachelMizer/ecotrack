@@ -35,6 +35,7 @@ export default function Dashboard() {
   const [month, setMonth] = useState(months[0].value)
   const [f, setF] = useState(EMPTY)
   const [tableView, setTableView] = useState(false)
+  const [weightTableView, setWeightTableView] = useState(false)
   const range = monthRange(month)
 
   const temps = useApi('/api/readings/', { kind: 'temperature', start: range.start, end: range.end })
@@ -71,6 +72,16 @@ export default function Dashboard() {
 
   const weightRows = (weights.data?.rows || []).filter(match)
   const weightSpecies = SPECIES.filter((s) => !f.species || s.key === f.species)
+  const weightSeries = SPECIES.map((s) => ({
+    key: s.key, label: s.label, color: s.hex,
+    points: weightRows.filter((r) => r.species === s.key).map((r) => ({ ...r, x: Number(r.date.slice(8, 10)), y: r.value })),
+  }))
+  // Cows (~2,000 lb) and chicks (~0.2 lb) can't share a linear axis, so mixed species use a log scale.
+  const weightSpeciesShown = new Set(weightRows.map((r) => r.species)).size
+  const logWeights = weightSpeciesShown > 1
+  const wVals = weightRows.map((r) => r.value)
+  const logTicks = [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 25, 50, 100, 250, 500, 1000, 2500]
+    .filter((t) => wVals.length && t >= Math.min(...wVals) / 2.5 && t <= Math.max(...wVals) * 2.5)
 
   const tip = (unit) => (p) => (
     <div className="tooltip">
@@ -84,10 +95,55 @@ export default function Dashboard() {
   const s = summary.data
   return (
     <>
-      <h1>Statistics Dashboard</h1>
-      <p className="tagline">Where animal health meets land insight</p>
+      <h1 style={{ marginBottom: '.75rem' }}>Herd at a Glance</h1>
+      <ErrorNote error={temps.error || weights.error || summary.error} />
 
-      <div className="filters" role="group" aria-label="Dashboard filters">
+      <div className={`grid cols-3 ${summary.loading ? 'loading' : ''}`}>
+        <section className="tile green" aria-labelledby="t-health">
+          <h3 id="t-health">Health</h3>
+          <div className="stat-row">
+            {SPECIES.map((sp) => (
+              <div key={sp.key}><div className="stat">{s?.species[sp.key] ?? '–'}</div><div className="stat-label">{sp.label}</div></div>
+            ))}
+          </div>
+          <p className="small" style={{ margin: '0 0 .3rem' }}>Needs attention:</p>
+          <ul style={{ margin: 0, paddingLeft: '1rem' }}>
+            {s?.attention.map((a) => (
+              <li key={a.slug} className="small">
+                <Link to={`/catalog/${speciesByKey[a.species].group}#${a.slug}`}>{a.name}</Link>{' '}
+                <HealthPill status={a.status} /> <span className="muted">{a.condition}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="tile teal" aria-labelledby="t-feed">
+          <h3 id="t-feed">Feed &amp; treatments</h3>
+          <div className="stat-row">
+            <div><div className="stat">{s?.active_medications ?? '–'}</div><div className="stat-label">Active meds &amp; supplements</div></div>
+            <div><div className="stat">{s?.upcoming_vaccinations ?? '–'}</div><div className="stat-label">Vaccinations due (21 days)</div></div>
+          </div>
+          <p className="small" style={{ margin: '0 0 .3rem' }}>Feeders at or below 25%:</p>
+          <ul style={{ margin: 0, paddingLeft: '1rem' }}>
+            {s?.low_feed.length === 0 && <li className="small">None, all feeders are stocked.</li>}
+            {s?.low_feed.map((l) => (
+              <li key={l.feeder + l.feed} className="small">
+                <span className="pill warning">▼ {l.percent_full}%</span> {l.feeder}: {l.feed}
+                <span className="muted"> (~{l.days_remaining} days left)</span>
+              </li>
+            ))}
+          </ul>
+          <p className="small" style={{ marginBottom: 0 }}><Link className="arrow-link" to="/nutrition">Go to Nutrition →</Link></p>
+        </section>
+        <section className="tile mauve" aria-labelledby="t-eggs">
+          <h3 id="t-eggs">Eggs this month</h3>
+          <div className="stat-row">
+            <div><div className="stat">{s ? s.eggs.reduce((t, e) => t + e.eggs, 0) : '–'}</div><div className="stat-label">Eggs month-to-date</div></div>
+          </div>
+          <EggBars eggs={s?.eggs || []} />
+        </section>
+      </div>
+
+      <div className="filters" style={{ marginTop: '2.5rem' }} role="group" aria-label="Dashboard filters">
         <label>Month
           <select value={month} onChange={(e) => setMonth(e.target.value)}>
             {months.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
@@ -129,13 +185,13 @@ export default function Dashboard() {
         <button className="link-btn" onClick={clear} disabled={isDefault}>Clear filters</button>
       </div>
 
-      <ErrorNote error={temps.error || weights.error || summary.error} />
 
+      <h2 style={{ marginTop: '1.2rem' }}>Temperatures</h2>
       <ScatterPanel
         title={`Body temperatures · ${months.find((m) => m.value === month).label}`}
         series={tempSeries} xLabel="Days of the month" yLabel="Temperature (°F)" xDomain={[1, range.days]} xTicks={days}
         yDomain={[(min) => Math.floor(Math.min(min, band?.[0] ?? min) - 1), (max) => Math.ceil(Math.max(max, band?.[1] ?? max) + 1)]}
-        band={band} renderTooltip={tip('°F')} loading={temps.loading} height={360}
+        band={band} renderTooltip={tip('°F')} loading={temps.loading} height={540} yTickCount={11}
       />
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', margin: '.4rem 0' }}>
         <p className="muted small" style={{ margin: 0 }}>
@@ -146,83 +202,62 @@ export default function Dashboard() {
           {tableView ? 'Hide table' : 'View as table'}
         </button>
       </div>
-      {tableView && (
-        <div className="table-wrap" style={{ maxHeight: 320, overflowY: 'auto' }}>
-          <table>
-            <thead><tr><th>Date</th><th>Animal</th><th>Species</th><th>Group</th><th className="num">Temp °F</th></tr></thead>
-            <tbody>
-              {tempRows.slice().sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name)).map((r) => (
-                <tr key={r.slug + r.date}><td>{formatDate(r.date)}</td><td>{r.name}</td><td>{speciesByKey[r.species].single}</td>
-                  <td>{r.zone}</td><td className="num">{r.value.toFixed(1)}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      {tableView && <ReadingsTable rows={tempRows} unit="Temp °F" digits={1} />}
 
-      <h2>Weight by age</h2>
-      <p className="muted small" style={{ textAlign: 'center', marginTop: '-.6rem' }}>
-        Weekly weigh-ins in the selected month. Each species has its own scale.
+      <h2>Weights</h2>
+      <ScatterPanel
+        title={`Weigh-ins · ${months.find((m) => m.value === month).label}`}
+        series={weightSeries} xLabel="Days of the month" yLabel={logWeights ? 'Weight (lb, log scale)' : 'Weight (lb)'}
+        xDomain={[1, range.days]} xTicks={days} height={540} renderTooltip={tip('lb')} loading={weights.loading}
+        yScale={logWeights ? 'log' : 'auto'} yTicks={logWeights ? logTicks : undefined}
+        yDomain={logWeights ? [Math.min(...wVals) * 0.7, Math.max(...wVals) * 1.3] : [0, 'auto']}
+        yTickFormatter={(v) => v.toLocaleString()}
+      />
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', margin: '.4rem 0' }}>
+        <p className="muted small" style={{ margin: 0 }}>
+          {weightRows.length} weigh-ins. Animals are weighed weekly.
+          {logWeights ? ' Several species are shown, so the weight axis is logarithmic; pick one species for a linear scale.' : ''}
+        </p>
+        <button className="link-btn" onClick={() => setWeightTableView((v) => !v)} aria-expanded={weightTableView}>
+          {weightTableView ? 'Hide table' : 'View as table'}
+        </button>
+      </div>
+      {weightTableView && <ReadingsTable rows={weightRows} unit="Weight lb" digits={2} />}
+
+      <h3 style={{ textAlign: 'center', margin: '2rem 0 .3rem', fontSize: '1.15rem' }}>Weight by age</h3>
+      <p className="muted small" style={{ textAlign: 'center', marginTop: 0 }}>
+        The same weigh-ins plotted against each animal's age. Each species has its own scale.
       </p>
       <div className="grid cols-3">
         {weightSpecies.map((sp) => {
           const pts = weightRows.filter((r) => r.species === sp.key)
             .map((r) => ({ ...r, x: +(r.age_days / 7).toFixed(1), y: r.value }))
           return (
-            <ScatterPanel key={sp.key} title={sp.label}
+            <ScatterPanel key={sp.key} title={sp.label} className="title-center"
               series={[{ key: sp.key, label: sp.label, color: sp.hex, points: pts }]}
-              xLabel="Age (weeks)" yLabel="Weight (lb)" height={260} renderTooltip={tip('lb')}
+              xLabel="Age (weeks)" yLabel="Weight (lb)" height={440} renderTooltip={tip('lb')} yTickCount={9}
               loading={weights.loading} yTickFormatter={(v) => v.toLocaleString()} />
           )
         })}
       </div>
 
-      <h2>Herd at a glance</h2>
-      <div className={`grid cols-3 ${summary.loading ? 'loading' : ''}`}>
-        <section className="tile green" aria-labelledby="t-health">
-          <h3 id="t-health">Health</h3>
-          <div className="stat-row">
-            {SPECIES.map((sp) => (
-              <div key={sp.key}><div className="stat">{s?.species[sp.key] ?? '–'}</div><div className="stat-label">{sp.label}</div></div>
-            ))}
-          </div>
-          <p className="small" style={{ margin: '0 0 .3rem' }}>Needs attention:</p>
-          <ul style={{ margin: 0, paddingLeft: '1rem' }}>
-            {s?.attention.map((a) => (
-              <li key={a.slug} className="small">
-                <Link to={`/catalog/${speciesByKey[a.species].group}#${a.slug}`}>{a.name}</Link>{' '}
-                <HealthPill status={a.status} /> <span className="muted">{a.condition}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="tile teal" aria-labelledby="t-feed">
-          <h3 id="t-feed">Feed &amp; treatments</h3>
-          <div className="stat-row">
-            <div><div className="stat">{s?.active_medications ?? '–'}</div><div className="stat-label">Active meds &amp; supplements</div></div>
-            <div><div className="stat">{s?.upcoming_vaccinations ?? '–'}</div><div className="stat-label">Vaccinations due (21 days)</div></div>
-          </div>
-          <p className="small" style={{ margin: '0 0 .3rem' }}>Feeders at or below 25%:</p>
-          <ul style={{ margin: 0, paddingLeft: '1rem' }}>
-            {s?.low_feed.length === 0 && <li className="small">None, all feeders are stocked.</li>}
-            {s?.low_feed.map((l) => (
-              <li key={l.feeder + l.feed} className="small">
-                <span className="pill warning">▼ {l.percent_full}%</span> {l.feeder}: {l.feed}
-                <span className="muted"> (~{l.days_remaining} days left)</span>
-              </li>
-            ))}
-          </ul>
-          <p className="small" style={{ marginBottom: 0 }}><Link to="/nutrition">Go to Nutrition →</Link></p>
-        </section>
-        <section className="tile mauve" aria-labelledby="t-eggs">
-          <h3 id="t-eggs">Eggs this month</h3>
-          <div className="stat-row">
-            <div><div className="stat">{s ? s.eggs.reduce((t, e) => t + e.eggs, 0) : '–'}</div><div className="stat-label">Eggs month-to-date</div></div>
-          </div>
-          <EggBars eggs={s?.eggs || []} />
-        </section>
-      </div>
     </>
+  )
+}
+
+function ReadingsTable({ rows, unit, digits }) {
+  return (
+    <div className="table-wrap" style={{ maxHeight: 320, overflowY: 'auto' }}>
+      <table>
+        <thead><tr><th>Date</th><th>Animal</th><th>Species</th><th>Group</th><th className="num">{unit}</th></tr></thead>
+        <tbody>
+          {rows.slice().sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name)).map((r) => (
+            <tr key={r.slug + r.date}><td>{formatDate(r.date)}</td><td>{r.name}</td><td>{speciesByKey[r.species].single}</td>
+              <td>{r.zone}</td><td className="num">{r.value.toFixed(digits)}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 

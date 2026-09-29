@@ -9,11 +9,11 @@ import { Legend } from './bits'
  */
 export default function ScatterPanel({
   title, series, xLabel, yLabel, xDomain, yDomain, xTicks, height = 320, band, renderTooltip,
-  loading, emptyText = 'No readings match these filters.', yTickFormatter,
+  loading, emptyText = 'No readings match these filters.', yTickFormatter, yScale = 'auto', yTicks, yTickCount, className = '',
 }) {
   const visible = series.filter((s) => s.points.length)
   return (
-    <figure className={`chart-panel ${loading ? 'loading' : ''}`} style={{ margin: 0 }}>
+    <figure className={`chart-panel ${className} ${loading ? 'loading' : ''}`} style={{ margin: 0 }}>
       {title && <figcaption className="chart-title">{title}</figcaption>}
       <Legend items={visible.map((s) => ({ label: s.label, color: s.color }))} />
       {visible.length === 0 ? (
@@ -30,6 +30,7 @@ export default function ScatterPanel({
               tickLine={false} axisLine={{ stroke: '#7e5044', strokeWidth: 3 }} interval={0}
               label={{ value: xLabel, position: 'bottom', offset: 12 }} allowDecimals={false} />
             <YAxis type="number" dataKey="y" domain={yDomain || ['auto', 'auto']} tickFormatter={yTickFormatter}
+              scale={yScale} ticks={yTicks} tickCount={yTickCount} allowDataOverflow={yScale === 'log'}
               tickLine={false} axisLine={{ stroke: '#7e5044', strokeWidth: 3 }} width={52}
               label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: -8, style: { textAnchor: 'middle' } }} />
             <ZAxis range={[64, 64]} />

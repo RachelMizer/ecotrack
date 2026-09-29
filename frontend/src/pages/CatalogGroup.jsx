@@ -94,12 +94,12 @@ function AnimalCard({ a, group, highlight }) {
           <Stat label="Location">{a.zone}</Stat>
           <Stat label="Weight">
             {formatWeight(a.latest_weight)}
-            <Link to={`/catalog/${group}/${a.slug}/weights`}>history →</Link>
+            <Link className="arrow-link" to={`/catalog/${group}/${a.slug}/weights`}>history →</Link>
           </Stat>
           <Stat label="Temperature">
             {a.latest_temp != null ? `${Number(a.latest_temp).toFixed(1)} °F` : '—'}
             {ts && ts !== 'normal' && <span className={`pill ${ts === 'low' ? 'warning' : 'critical'}`} style={{ marginLeft: 6 }}>▲ {ts}</span>}
-            <Link to={`/catalog/${group}/${a.slug}/temperatures`}>history →</Link>
+            <Link className="arrow-link" to={`/catalog/${group}/${a.slug}/temperatures`}>history →</Link>
           </Stat>
           {a.egg_count_mtd != null && <Stat label="Eggs this month">{a.egg_count_mtd}</Stat>}
           {a.dam && <Stat label="Dam">{a.dam}</Stat>}

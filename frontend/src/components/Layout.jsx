@@ -30,6 +30,7 @@ export default function Layout() {
     <div className="app">
       <header className="site-header">
         <Brand />
+        <p className="site-tagline">Where animal health meets land insight</p>
         <nav className="nav" aria-label="Main">
           <NavLink to="/dashboard">Dashboard</NavLink>
           <NavLink to="/catalog">Catalog</NavLink>
@@ -55,6 +56,7 @@ export function PublicLayout() {
     <div className="app">
       <header className="site-header">
         <Brand />
+        <p className="site-tagline">Where animal health meets land insight</p>
         <nav className="nav" aria-label="Main"><NavLink to="/login">Log in</NavLink></nav>
       </header>
       <main><Outlet /></main>
