@@ -8,6 +8,7 @@
 .catalog-btn.cow { background: var(--brown); }
 .catalog-btn.pig { background: var(--green); }
 .catalog-btn.chicken { background: var(--teal); }
+.catalog-btn.incubator { background: var(--bark); }
 .catalog-btn-label { font-family: var(--font-head); font-size: 2.4rem; }
 .catalog-btn-count { font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .08em; font-size: .85rem; opacity: .9; }
 
@@ -32,6 +33,19 @@
 .stats dd a { font-size: .8rem; margin-left: .35rem; white-space: nowrap; }
 .care { margin-top: .8rem; padding-top: .7rem; border-top: 1px dashed var(--line); font-size: .88rem; }
 .care ul { margin: .2rem 0 0; padding-left: 1.1rem; }
+
+/* incubator */
+.incubator-summary { display: flex; flex-wrap: wrap; gap: .6rem 2rem; align-items: baseline; margin-bottom: 1.2rem; }
+.incubator-summary h2 { margin: 0; }
+.egg-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.egg-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; }
+.egg-card.empty { display: grid; place-items: center; min-height: 140px; border-style: dashed; background: transparent; color: var(--ink-3); }
+.egg-card .head { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; margin-bottom: .7rem; }
+.egg-card .slot { font-family: var(--font-head); color: var(--brown); font-size: 1.4rem; margin-right: auto; }
+.egg-card .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.egg-card .notes { margin: .7rem 0 0; }
+.egg-shape { width: 30px; height: 38px; flex: none; border: 1px solid rgba(75, 44, 36, .35);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; }
 
 @media (max-width: 560px) {
   .animal-card { grid-template-columns: 1fr; }

@@ -69,7 +69,6 @@ export default function Account() {
           </div>
         </form>
       </div>
-      <p className="muted small" style={{ textAlign: 'center' }}>To change your password, use the Django admin at <code>/admin/</code> on the API server.</p>
     </>
   )
 }

@@ -16,6 +16,10 @@ export default function Catalog() {
             <span className="catalog-btn-count">{data ? `${data.species[s.key]} animals` : ' '}</span>
           </Link>
         ))}
+        <Link to="/catalog/incubator" className="catalog-btn incubator">
+          <span className="catalog-btn-label">Incubator</span>
+          <span className="catalog-btn-count">{data ? `${data.incubating} eggs` : ' '}</span>
+        </Link>
       </div>
     </>
   )

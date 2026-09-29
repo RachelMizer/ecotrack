@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { HEALTH_LABEL } from '../lib/farm'
+import { NavLink } from 'react-router-dom'
+import { HEALTH_LABEL, SPECIES } from '../lib/farm'
 
 /**
  * Animal photo from /public/animals/<slug>.jpg. Until a photo is added, a square
@@ -52,5 +53,15 @@ export function Legend({ items }) {
         <span key={it.label}><i style={{ background: it.color }} />{it.label}</span>
       ))}
     </div>
+  )
+}
+
+/** Tabs across the top of each catalog group page (Cows, Pigs, Chickens, Incubator). */
+export function GroupTabs() {
+  return (
+    <nav className="group-tabs" aria-label="Animal groups">
+      {SPECIES.map((s) => <NavLink key={s.key} to={`/catalog/${s.group}`}>{s.label}</NavLink>)}
+      <NavLink to="/catalog/incubator">Incubator</NavLink>
+    </nav>
   )
 }

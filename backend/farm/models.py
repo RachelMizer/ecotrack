@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.db import models
@@ -245,6 +245,75 @@ class FeederContent(models.Model):
     def days_remaining(self):
         usage = float(self.daily_usage_lbs)
         return round(float(self.current_lbs) / usage, 1) if usage else None
+
+
+class Incubator(models.Model):
+    name = models.CharField(max_length=80)
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT, related_name="incubators")
+    capacity = models.PositiveIntegerField(default=12)
+    incubation_days = models.PositiveIntegerField(default=21)  # chicken eggs hatch at ~21 days
+    lockdown_day = models.PositiveIntegerField(default=18)  # stop turning, raise humidity
+    temp_f = models.DecimalField(max_digits=4, decimal_places=1)
+    humidity_pct = models.PositiveIntegerField()
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class IncubatorEgg(models.Model):
+    """One egg in an incubator slot, linked to the hen that laid it."""
+
+    class Color(models.TextChoices):
+        WHITE = "white", "White"
+        CREAM = "cream", "Cream"
+        LIGHT_BROWN = "light_brown", "Light brown"
+        BROWN = "brown", "Brown"
+        DARK_BROWN = "dark_brown", "Dark brown"
+
+    class Size(models.TextChoices):  # USDA weight classes
+        SMALL = "small", "Small"
+        MEDIUM = "medium", "Medium"
+        LARGE = "large", "Large"
+        EXTRA_LARGE = "extra_large", "Extra large"
+        JUMBO = "jumbo", "Jumbo"
+
+    class Candling(models.TextChoices):
+        NOT_CANDLED = "not_candled", "Not yet candled"
+        DEVELOPING = "developing", "Developing"
+        UNCLEAR = "unclear", "Unclear, recheck"
+        CLEAR = "clear", "Clear (infertile)"
+
+    incubator = models.ForeignKey(Incubator, on_delete=models.CASCADE, related_name="eggs")
+    slot = models.PositiveIntegerField()
+    hen = models.ForeignKey(
+        Animal, on_delete=models.PROTECT, related_name="incubated_eggs",
+        limit_choices_to={"species": Species.CHICKEN, "sex": Animal.Sex.FEMALE},
+    )
+    laid_date = models.DateField()
+    set_date = models.DateField(help_text="Day the egg went into the incubator")
+    last_checked = models.DateField()
+    color = models.CharField(max_length=12, choices=Color.choices)
+    size = models.CharField(max_length=12, choices=Size.choices)
+    weight_g = models.DecimalField(max_digits=4, decimal_places=1)
+    shell = models.CharField(max_length=80, blank=True)  # texture / markings
+    candling = models.CharField(max_length=12, choices=Candling.choices, default=Candling.NOT_CANDLED)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["incubator", "slot"]
+        unique_together = [("incubator", "slot")]
+
+    @property
+    def days_incubating(self):
+        return (date.today() - self.set_date).days
+
+    @property
+    def projected_hatch(self):
+        return self.set_date + timedelta(days=self.incubator.incubation_days)
 
 
 class UserProfile(models.Model):

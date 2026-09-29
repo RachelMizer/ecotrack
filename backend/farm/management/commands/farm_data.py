@@ -289,3 +289,28 @@ FEEDERS = [
         ("Close-up / heifer concentrate 14%", "Grain", 150, 9),
     ]),
 ]
+
+# ---------------------------------------------------------------------------
+# Incubator. Holds up to 12 eggs; chicken eggs hatch ~21 days after setting.
+# Eggs: slot, hen, laid_offset, set_offset, last_checked_offset, color, size,
+#       weight_g, shell, candling, notes
+# Two batches: one set 16 days ago (candled day 7 and 14), one set 5 days ago.
+# Egg colors follow breed: Leghorns lay white, Golden Comets and Isa Reds brown.
+# ---------------------------------------------------------------------------
+INCUBATOR = ("Neverland Incubator", "Neverland Brooder", 12, 99.5, 50,
+             "Forced-air cabinet with auto-turner. Turner off and humidity raised to 65% at lockdown (day 18).")
+
+INCUBATOR_EGGS = [
+    (1, "Elizabeth", -18, -16, -2, "brown", "large", 58.4, "Smooth, even color", "developing", ""),
+    (2, "Lydia", -17, -16, -2, "light_brown", "large", 57.9, "Light speckling at the broad end", "developing", ""),
+    (3, "Jane", -18, -16, -2, "white", "extra_large", 64.2, "Smooth", "developing", ""),
+    (4, "Kitty", -17, -16, -2, "white", "large", 60.1, "Faint ridge near the tip", "clear",
+     "No development at day 14 candling; remove at next check."),
+    (5, "Amy", -19, -16, -2, "brown", "extra_large", 65.0, "Smooth, glossy", "developing", ""),
+    (6, "Jo", -18, -16, -2, "dark_brown", "large", 61.3, "Heavy bloom, slightly chalky", "developing", ""),
+    (7, "Mary", -7, -5, 0, "brown", "medium", 55.2, "Smooth", "not_candled", "First candling due on day 7."),
+    (8, "Meg", -6, -5, 0, "brown", "large", 59.6, "Few dark speckles", "not_candled", "First candling due on day 7."),
+    (9, "Beth", -6, -5, 0, "light_brown", "medium", 54.8, "Slightly pointed", "not_candled",
+     "First candling due on day 7."),
+    (10, "Jane", -7, -5, 0, "white", "large", 62.0, "Smooth", "not_candled", "First candling due on day 7."),
+]

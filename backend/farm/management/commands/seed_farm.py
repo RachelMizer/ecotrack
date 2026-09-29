@@ -20,7 +20,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from farm.models import (
-    Animal, Feeder, FeederContent, HealthEvent, LocationPing, TemperatureRecord,
+    Animal, Feeder, FeederContent, HealthEvent, Incubator, IncubatorEgg, LocationPing, TemperatureRecord,
     Treatment, UserProfile, WeightRecord, Zone,
 )
 
@@ -102,7 +102,7 @@ class Command(BaseCommand):
         self.rng = random.Random(20260929)
         self.today = date.today()
 
-        for model in (LocationPing, TemperatureRecord, WeightRecord, Treatment, HealthEvent,
+        for model in (IncubatorEgg, Incubator, LocationPing, TemperatureRecord, WeightRecord, Treatment, HealthEvent,
                       FeederContent, Feeder, Animal, Zone):
             model.objects.all().delete()
 
@@ -113,13 +113,15 @@ class Command(BaseCommand):
         self.seed_measurements(animals)
         self.seed_tracking(animals)
         self.seed_feeders(zones)
+        self.seed_incubator(zones, animals)
         if not opts["keep_user"]:
             self.seed_user()
 
         self.stdout.write(self.style.SUCCESS(
             f"Seeded {Animal.objects.count()} animals, {WeightRecord.objects.count()} weights, "
             f"{TemperatureRecord.objects.count()} temperatures, {Treatment.objects.count()} treatments, "
-            f"{LocationPing.objects.count()} tracker pings, {Feeder.objects.count()} feeders."
+            f"{LocationPing.objects.count()} tracker pings, {Feeder.objects.count()} feeders, "
+            f"{IncubatorEgg.objects.count()} incubating eggs."
         ))
 
     def day(self, offset):
@@ -291,6 +293,18 @@ class Command(BaseCommand):
                     feeder=f, feed_name=feed, category=cat, capacity_lbs=Decimal(str(cap)),
                     current_lbs=Decimal(f"{current:.1f}"), daily_usage_lbs=Decimal(str(usage)),
                 )
+
+    # ----------------------------------------------------------------------- incubator
+    def seed_incubator(self, zones, animals):
+        name, zone, capacity, temp, humidity, notes = D.INCUBATOR
+        inc = Incubator.objects.create(name=name, zone=zones[zone], capacity=capacity,
+                                       temp_f=Decimal(str(temp)), humidity_pct=humidity, notes=notes)
+        for slot, hen, laid, set_, checked, color, size, weight, shell, candling, egg_notes in D.INCUBATOR_EGGS:
+            IncubatorEgg.objects.create(
+                incubator=inc, slot=slot, hen=animals[hen], laid_date=self.day(laid), set_date=self.day(set_),
+                last_checked=self.day(checked), color=color, size=size, weight_g=Decimal(str(weight)),
+                shell=shell, candling=candling, notes=egg_notes,
+            )
 
     # ----------------------------------------------------------------------- user
     def seed_user(self):

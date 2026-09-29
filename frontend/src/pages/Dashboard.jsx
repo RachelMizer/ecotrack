@@ -107,7 +107,7 @@ export default function Dashboard() {
             ))}
           </div>
           <p className="small" style={{ margin: '0 0 .3rem' }}>Needs attention:</p>
-          <ul style={{ margin: 0, paddingLeft: '1rem' }}>
+          <ul className="attention-list" style={{ margin: 0, paddingLeft: '1rem' }}>
             {s?.attention.map((a) => (
               <li key={a.slug} className="small">
                 <Link to={`/catalog/${speciesByKey[a.species].group}#${a.slug}`}>{a.name}</Link>{' '}
