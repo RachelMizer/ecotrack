@@ -88,7 +88,7 @@ PIGS = [
     ("Sow Piglet", "F", "Porkahontas", "Red Wattle Hog", 14, "immature", "Cloverfield Farrowing Barn", None, 3.1),
     ("Boar Piglet", "M", "Sir Oinks-A-Lot", "Red Wattle Hog", 14, "immature", "Cloverfield Farrowing Barn", None, 3.8),
     ("Boar Piglet", "M", "Hogwarts", "Red Wattle Hog", 14, "immature", "Cloverfield Farrowing Barn", None, 4.0),
-    ("Boar Piglet", "M", "Pork Solo", "Red Wattle Hog", 14, "immature", "Cloverfield Farrowing Barn", None, 3.6),
+    ("Boar Piglet", "M", "Ham Solo", "Red Wattle Hog", 14, "immature", "Cloverfield Farrowing Barn", None, 3.6),
     ("Boar Piglet", "M", "Hamlet", "Red Wattle Hog", 14, "immature", "Cloverfield Farrowing Barn", None, 3.9),
     ("Boar Piglet", "M", "Bacon Bill", "Red Wattle Hog", 14, "immature", "Cloverfield Farrowing Barn", None, 3.4),
 ]
@@ -150,7 +150,7 @@ ALL_TEENS = ["Daisy", "Poppy", "Iris", "Rose", "Violet", "Petunia", "Harry", "Ro
 ADULT_CHICKENS = ["Elizabeth", "Jane", "Lydia", "Kitty", "Mary", "Jo", "Meg", "Beth", "Amy",
                   "Darcy", "Fred", "Lawrence"]
 PIGLETS = ["Piggy Minaj", "Hogatha Christie", "Porkahontas", "Sir Oinks-A-Lot", "Hogwarts",
-           "Pork Solo", "Hamlet", "Bacon Bill"]
+           "Ham Solo", "Hamlet", "Bacon Bill"]
 CALVES = ["Edith", "Chuck", "Unnamed Calf"]
 ADULT_CATTLE = ["Harold", "Angus", "Gertrude", "Maggie", "Lucy"]
 ALL_CATTLE = ADULT_CATTLE + CALVES
