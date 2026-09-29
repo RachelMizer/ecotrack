@@ -45,6 +45,10 @@ Wildlife telemetry platform: movement tracking and biometric monitoring for land
 - Stopped both servers, cleared `Desktop\EcoTrack` and recloned to pick up Site 1's push (`24d622c`, "Refine UI: login photo, dashboard layout, map labels, nutrition tabs"). The local setup above (`.venv`, `node_modules`, SQLite database) was removed with it
 - Redid local setup on the new clone (`.venv` + `requirements.txt`, `migrate`, `seed_farm`, `npm install`) and restarted both servers. Verified demo login and all 43 animals
 - Renamed boar piglet **Pork Solo** to **Ham Solo** (`farm_data.py`, `dev/animal data/Pigs.txt`); photo is now `ham-solo.jpg` in `images_needed.txt`. Re-ran `seed_farm`
+- Site 2 machine setup: set PowerShell execution policy to RemoteSigned (CurrentUser) so `npm` works, and installed `requirements.txt` into the main Python 3.13 so `python manage.py runserver` works without activating `.venv`
+- Account page: removed the "change your password in the Django admin" note
+- Catalog: added an **Incubator** section (`/catalog/incubator`). New `Incubator` / `IncubatorEgg` models (migration `0002_incubator`) and `/api/incubators/` endpoint. Each egg shows the hen that laid it, color, size and weight, shell, candling result, days in the incubator, projected hatch date (set date + 21 days) and last checked date. Seeded 10 eggs in the 12-slot Neverland Incubator (two batches). Re-ran `seed_farm`
+- Dashboard: tightened padding on the status pills in the Health tile's "Needs attention" list
 
 ---
 

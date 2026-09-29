@@ -11,12 +11,13 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .models import (
-    Animal, Feeder, FeederContent, LocationPing, TemperatureRecord, Treatment, UserProfile, WeightRecord, Zone,
+    Animal, Feeder, FeederContent, Incubator, IncubatorEgg, LocationPing, TemperatureRecord, Treatment, UserProfile,
+    WeightRecord, Zone,
 )
 from .schedule import animal_schedule
 from .serializers import (
-    AccountSerializer, AnimalDetailSerializer, AnimalListSerializer, FeederSerializer, TreatmentSerializer,
-    ZoneSerializer,
+    AccountSerializer, AnimalDetailSerializer, AnimalListSerializer, FeederSerializer, IncubatorSerializer,
+    TreatmentSerializer, ZoneSerializer,
 )
 
 
@@ -165,7 +166,17 @@ def summary(request):
     return Response({
         "species": by_species, "health": by_health, "low_feed": low_feed, "active_medications": active_meds,
         "upcoming_vaccinations": upcoming_vax, "eggs": eggs, "attention": sick,
+        "incubating": IncubatorEgg.objects.count(),
     })
+
+
+# --------------------------------------------------------------------------- incubators
+class IncubatorList(generics.ListAPIView):
+    serializer_class = IncubatorSerializer
+    pagination_class = None
+    queryset = Incubator.objects.select_related("zone").prefetch_related(
+        Prefetch("eggs", queryset=IncubatorEgg.objects.select_related("incubator", "hen__zone"))
+    )
 
 
 # --------------------------------------------------------------------------- map

@@ -169,6 +169,7 @@ select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible
 .pill.healthy, .pill.good, .pill.completed { background: var(--good-tint); color: var(--good); }
 .pill.active { background: var(--teal-tint); color: #1f5f69; }
 .pill.neutral { background: var(--mauve-tint); color: var(--bark); }
+.attention-list .pill { padding: 0 .35rem; gap: .2rem; }
 
 /* ------------------------------------------------------------------ tables */
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }

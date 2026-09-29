@@ -9,6 +9,7 @@ const Account = lazy(() => import('./pages/Account'))
 const AnimalRecords = lazy(() => import('./pages/AnimalRecords'))
 const Catalog = lazy(() => import('./pages/Catalog'))
 const CatalogGroup = lazy(() => import('./pages/CatalogGroup'))
+const Incubator = lazy(() => import('./pages/Incubator'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const DevNotes = lazy(() => import('./pages/DevNotes'))
 const Nutrition = lazy(() => import('./pages/Nutrition'))
@@ -34,6 +35,7 @@ export default function App() {
       <Route element={<RequireAuth><Layout /></RequireAuth>}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/catalog" element={<Catalog />} />
+        <Route path="/catalog/incubator" element={<Incubator />} />
         <Route path="/catalog/:group" element={<CatalogGroup />} />
         <Route path="/catalog/:group/:slug/:kind" element={<AnimalRecords />} />
         <Route path="/tracker" element={<Tracker />} />

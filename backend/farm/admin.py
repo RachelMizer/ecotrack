@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from .models import (
-    Animal, Feeder, FeederContent, HealthEvent, LocationPing, TemperatureRecord, Treatment, UserProfile,
-    WeightRecord, Zone,
+    Animal, Feeder, FeederContent, HealthEvent, Incubator, IncubatorEgg, LocationPing, TemperatureRecord, Treatment,
+    UserProfile, WeightRecord, Zone,
 )
 
 
@@ -35,6 +35,17 @@ class FeederContentInline(admin.TabularInline):
 class FeederAdmin(admin.ModelAdmin):
     list_display = ["name", "zone", "feeder_type", "last_refilled", "refill_interval_days"]
     inlines = [FeederContentInline]
+
+
+class IncubatorEggInline(admin.TabularInline):
+    model = IncubatorEgg
+    extra = 0
+
+
+@admin.register(Incubator)
+class IncubatorAdmin(admin.ModelAdmin):
+    list_display = ["name", "zone", "capacity", "temp_f", "humidity_pct"]
+    inlines = [IncubatorEggInline]
 
 
 @admin.register(WeightRecord, TemperatureRecord)

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, Navigate, useLocation, useParams } from 'react-router-dom'
-import { AnimalPhoto, ErrorNote, HealthPill } from '../components/bits'
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom'
+import { AnimalPhoto, ErrorNote, GroupTabs, HealthPill } from '../components/bits'
 import { api } from '../lib/api'
-import { formatAge, formatDate, formatWeight, SPECIES, speciesByGroup, tempStatus } from '../lib/farm'
+import { formatAge, formatDate, formatWeight, speciesByGroup, tempStatus } from '../lib/farm'
 import { useApi } from '../lib/useApi'
 import './Catalog.css'
 
@@ -36,9 +36,7 @@ export default function CatalogGroup() {
   return (
     <>
       <h1>{sp.label}</h1>
-      <nav className="group-tabs" aria-label="Animal groups">
-        {SPECIES.map((s) => <NavLink key={s.key} to={`/catalog/${s.group}`}>{s.label}</NavLink>)}
-      </nav>
+      <GroupTabs />
       <div className="filters">
         <label>Search<input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name" /></label>
         <label>Location

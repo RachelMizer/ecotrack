@@ -18,6 +18,7 @@ urlpatterns = [
     path("api/summary/", views.summary),
     path("api/zones/", views.ZoneList.as_view()),
     path("api/tracking/", views.tracking),
+    path("api/incubators/", views.IncubatorList.as_view()),
     path("api/feeders/", views.FeederList.as_view()),
     path("api/treatments/", views.TreatmentList.as_view()),
     path("api/schedule/", views.schedule),

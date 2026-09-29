@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Animal, Feeder, FeederContent, HealthEvent, Treatment, UserProfile, Zone
+from .models import (
+    Animal, Feeder, FeederContent, HealthEvent, Incubator, IncubatorEgg, Treatment, UserProfile, Zone,
+)
 
 
 class ZoneSerializer(serializers.ModelSerializer):
@@ -84,6 +86,34 @@ class FeederSerializer(serializers.ModelSerializer):
     def get_next_refill(self, obj):
         from datetime import timedelta
         return obj.last_refilled + timedelta(days=obj.refill_interval_days)
+
+
+class IncubatorEggSerializer(serializers.ModelSerializer):
+    hen = serializers.CharField(source="hen.name")
+    hen_slug = serializers.CharField(source="hen.slug")
+    hen_breed = serializers.CharField(source="hen.breed")
+    hen_zone = serializers.CharField(source="hen.zone.name")
+    color_label = serializers.CharField(source="get_color_display")
+    size_label = serializers.CharField(source="get_size_display")
+    candling_label = serializers.CharField(source="get_candling_display")
+    days_incubating = serializers.IntegerField(read_only=True)
+    projected_hatch = serializers.DateField(read_only=True)
+
+    class Meta:
+        model = IncubatorEgg
+        fields = ["id", "slot", "hen", "hen_slug", "hen_breed", "hen_zone", "laid_date", "set_date",
+                  "days_incubating", "projected_hatch", "last_checked", "color", "color_label", "size",
+                  "size_label", "weight_g", "shell", "candling", "candling_label", "notes"]
+
+
+class IncubatorSerializer(serializers.ModelSerializer):
+    zone = serializers.CharField(source="zone.name")
+    eggs = IncubatorEggSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Incubator
+        fields = ["id", "name", "zone", "capacity", "incubation_days", "lockdown_day", "temp_f", "humidity_pct",
+                  "notes", "eggs"]
 
 
 class AccountSerializer(serializers.ModelSerializer):
