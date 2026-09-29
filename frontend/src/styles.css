@@ -94,6 +94,10 @@ h3 { font-size: 1rem; margin: 0 0 .5rem; }
 .brand .word { font-family: var(--font-head); font-size: 2.2rem; letter-spacing: .02em; }
 .brand .eco { color: var(--green); }
 .brand .track { color: var(--brown); }
+.site-tagline {
+  margin: .35rem 0 0; text-align: center; color: var(--brown); font-family: var(--font-sub);
+  font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: .85rem;
+}
 .nav { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: .4rem 2.2rem; margin-top: .6rem; }
 .nav a {
   font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .05em;
@@ -128,6 +132,10 @@ select, input[type="date"], input[type="text"], input[type="number"], input[type
 select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .link-btn { background: none; border: 0; color: var(--teal); cursor: pointer; font-family: var(--font-sub);
   text-transform: uppercase; font-size: .78rem; letter-spacing: .06em; padding: .4rem 0; }
+/* Arrow links ("history →", "Go to Nutrition →", "← Back"): uppercase, bold, no underline.
+   Use this class for any new link of this kind. */
+.arrow-link { text-transform: uppercase; font-weight: 600; letter-spacing: .04em; text-decoration: none; color: var(--teal); }
+.arrow-link:hover { color: var(--brown); }
 .link-btn:disabled { color: var(--ink-3); cursor: default; }
 .btn {
   background: var(--brown); color: #fff; border: 0; border-radius: 4px; padding: .55rem 1.2rem; cursor: pointer;
@@ -176,6 +184,7 @@ tr:last-child td { border-bottom: 0; }
 .chart-panel { background: var(--surface); border: 2px solid var(--brown); padding: 1rem .5rem .5rem; }
 .chart-title { font-family: var(--font-sub); text-transform: uppercase; color: var(--bark); font-size: .95rem;
   letter-spacing: .05em; margin: 0 .8rem .4rem; }
+.title-center .chart-title { text-align: center; font-weight: 600; }
 .recharts-label, .recharts-cartesian-axis-tick text { font-family: var(--font-sub); }
 .recharts-label { text-transform: uppercase; letter-spacing: .06em; fill: var(--bark) !important; font-size: 12px; }
 .recharts-cartesian-axis-tick text { fill: var(--ink-2); font-size: 11px; }

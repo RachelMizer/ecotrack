@@ -5,11 +5,13 @@
 .area:focus { outline: none; }
 .area:focus rect { stroke: var(--teal); stroke-width: 3; }
 .area.current rect { cursor: zoom-out; stroke: none; fill: none; }
-.area-label { font-family: var(--font-sub); fill: var(--bark); letter-spacing: .08em; pointer-events: none; }
+.area-tag rect { fill: #fffdf9; stroke: var(--brown); stroke-width: 1.5; }
+.area-label { font-family: var(--font-sub); font-weight: 600; fill: var(--brown); letter-spacing: .08em; }
 .zone rect { stroke: var(--bark); stroke-width: 1.2; }
 .zone.pasture rect, .zone.enclosure rect { fill: rgba(107, 137, 70, .12); stroke: #8a6a4f; stroke-width: 2.5; stroke-dasharray: 10 3; }
 .zone rect.run { fill: rgba(169, 140, 133, .12); stroke: #a98c85; stroke-width: 1; stroke-dasharray: 3 3; }
-.zone-label { font-family: var(--font-sub); fill: var(--bark); paint-order: stroke; stroke: rgba(255, 253, 249, .85); stroke-width: 3px; }
+.zone-tag rect { fill: #fffdf9; fill-opacity: .92; stroke: #a98c85; stroke-width: .75; }
+.zone-label { font-family: var(--font-sub); fill: var(--bark); }
 .dot { cursor: pointer; }
 .dot:hover circle:nth-child(2), .dot:focus circle:nth-child(2) { stroke: var(--bark); }
 .dot:focus { outline: none; }

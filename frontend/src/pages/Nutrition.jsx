@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { ErrorNote, Pager, StatusPill } from '../components/bits'
 import { formatDate, SPECIES, speciesByKey } from '../lib/farm'
 import { useApi } from '../lib/useApi'
@@ -17,6 +17,8 @@ function level(pct) {
 export default function Nutrition() {
   const feeders = useApi('/api/feeders/')
   const treatments = useApi('/api/treatments/')
+  const [params, setParams] = useSearchParams()
+  const tab = params.get('tab') === 'care' ? 'care' : 'feeders'
   const [area, setArea] = useState('')
   const [f, setF] = useState({ species: '', kind: '', status: '', q: '' })
   const [page, setPage] = useState(1)
@@ -36,7 +38,15 @@ export default function Nutrition() {
       <h1>Nutrition &amp; Care</h1>
       <p className="tagline">Feeder levels, feed types, vaccinations and medications.</p>
 
-      <h2 style={{ marginTop: '1rem' }}>Feeding stations</h2>
+      <div className="page-tabs" role="tablist" aria-label="Nutrition sections">
+        <button role="tab" id="tab-feeders" aria-selected={tab === 'feeders'} aria-controls="panel-feeders"
+          onClick={() => setParams({}, { replace: true })}>Feeding stations</button>
+        <button role="tab" id="tab-care" aria-selected={tab === 'care'} aria-controls="panel-care"
+          onClick={() => setParams({ tab: 'care' }, { replace: true })}>Vaccinations &amp; medications</button>
+      </div>
+
+      {tab === 'feeders' && (
+      <section id="panel-feeders" role="tabpanel" aria-labelledby="tab-feeders">
       <div className="filters">
         <div className="segmented" role="group" aria-label="Area">
           <button aria-pressed={!area} onClick={() => setArea('')}>All areas</button>
@@ -57,7 +67,7 @@ export default function Nutrition() {
               return (
                 <div key={c.id} className="feed-row">
                   <div className="feed-name">
-                    <span>{c.feed_name}</span>
+                    <span className="feed-title">{c.feed_name}</span>
                     <span className={`pill ${lv.cls}`}>{lv.icon} {lv.label}</span>
                   </div>
                   <div className="meter" role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={c.percent_full}
@@ -78,8 +88,11 @@ export default function Nutrition() {
           </article>
         ))}
       </div>
+      </section>
+      )}
 
-      <h2>Vaccinations &amp; medications</h2>
+      {tab === 'care' && (
+      <section id="panel-care" role="tabpanel" aria-labelledby="tab-care">
       <div className="filters" role="group" aria-label="Treatment filters">
         <label>Search<input type="search" value={f.q} onChange={set('q')} placeholder="Animal, drug, reason" /></label>
         <label>Species
@@ -133,6 +146,8 @@ export default function Nutrition() {
       <p className="muted small">
         Drug names and doses are illustrative and must be confirmed by your veterinarian. Always follow label directions and withdrawal times.
       </p>
+      </section>
+      )}
     </>
   )
 }

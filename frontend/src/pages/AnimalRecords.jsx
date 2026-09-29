@@ -59,11 +59,11 @@ export default function AnimalRecords() {
 
   return (
     <>
-      <Link className="back" to={`/catalog/${group}#${slug}`}>← Back to {data?.animal || 'animal'} in {sp.label}</Link>
+      <Link className="back arrow-link" to={`/catalog/${group}#${slug}`}>← Back to {data?.animal || 'animal'} in {sp.label}</Link>
       <h1>{data?.animal || '…'}: {isTemp ? 'Temperature' : 'Weight'} Records</h1>
       <p className="tagline">
         {isTemp ? 'Core body temperature, taken every two days since birth.' : 'Weighed weekly since birth / hatching.'}
-        {' '}<Link to={`/catalog/${group}/${slug}/${isTemp ? 'weights' : 'temperatures'}`}>
+        {' '}<Link className="arrow-link" to={`/catalog/${group}/${slug}/${isTemp ? 'weights' : 'temperatures'}`}>
           See {isTemp ? 'weights' : 'temperatures'} →</Link>
       </p>
 
