@@ -1,0 +1,9 @@
+.feeder h3 { margin-bottom: .2rem; }
+.feed-row { margin: .7rem 0; }
+.feed-name { display: flex; justify-content: space-between; gap: .5rem; align-items: baseline; font-size: .92rem; }
+.meter { height: 12px; background: var(--mauve-tint); border-radius: 2px; margin: .3rem 0; overflow: hidden; }
+.meter-fill { height: 100%; border-radius: 0 4px 4px 0; background: var(--teal); }
+.meter-fill.warning { background: #c28a2c; }
+.meter-fill.critical { background: var(--critical); }
+.feed-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .2rem .8rem; font-size: .8rem; color: var(--ink-2); }
+.feed-meta b { color: var(--ink); }

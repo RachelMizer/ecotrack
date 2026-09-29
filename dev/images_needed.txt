@@ -1,0 +1,68 @@
+EcoTrack: images needed
+========================
+
+Total images needed: 44  (1 login background + 43 animal photos)
+
+Drop each file at the path shown and the site picks it up automatically. There is no
+code change to make. Until a file exists, a striped "Photo needed" square is shown
+(or a brand-colour gradient on the login page).
+
+1. LOGIN BACKGROUND (1)
+   frontend/public/images/login-chickens.jpg
+   Chickens scene, landscape, at least 1920 x 1080. The centre is covered by the login card.
+
+2. ANIMAL PHOTOS (43)
+   Square JPGs, at least 600 x 600, in frontend/public/animals/<file name>
+
+   Cows (8)
+     angus.jpg                Angus (Bull, Highland)
+     chuck.jpg                Chuck (Bull Calf, Holstein)
+     edith.jpg                Edith (Heifer Calf, Holstein)
+     gertrude.jpg             Gertrude (Heifer, Holstein)
+     harold.jpg               Harold (Bull, Holstein)
+     lucy.jpg                 Lucy (Heifer, Simmental)
+     maggie.jpg               Maggie (Heifer, Highland)
+     unnamed-calf.jpg         Unnamed Calf (Heifer Calf, Unrecorded)
+
+   Pigs (10)
+     bacon-bill.jpg           Bacon Bill (Boar Piglet, Red Wattle Hog)
+     hamela-anderson.jpg      Hamela Anderson (Sow, Red Wattle Hog)
+     hamlet.jpg               Hamlet (Boar Piglet, Red Wattle Hog)
+     hogatha-christie.jpg     Hogatha Christie (Sow Piglet, Red Wattle Hog)
+     hogwarts.jpg             Hogwarts (Boar Piglet, Red Wattle Hog)
+     kevin-bacon.jpg          Kevin Bacon (Boar, Mulefoot Hog)
+     piggy-minaj.jpg          Piggy Minaj (Sow Piglet, Red Wattle Hog)
+     pork-solo.jpg            Pork Solo (Boar Piglet, Red Wattle Hog)
+     porkahontas.jpg          Porkahontas (Sow Piglet, Red Wattle Hog)
+     sir-oinks-a-lot.jpg      Sir Oinks-A-Lot (Boar Piglet, Red Wattle Hog)
+
+   Chickens (25)
+     amy.jpg                  Amy (Hen, Isa Red)
+     beth.jpg                 Beth (Hen, Isa Red)
+     daisy.jpg                Daisy (Hen Teen, Golden Comet)
+     darcy.jpg                Darcy (Rooster, Golden Comet)
+     elizabeth.jpg            Elizabeth (Hen, Golden Comet)
+     fred.jpg                 Fred (Rooster, White Leghorn)
+     harry.jpg                Harry (Rooster Teen, Isa Brown)
+     iris.jpg                 Iris (Hen Teen, White Leghorn)
+     jane.jpg                 Jane (Hen, White Leghorn)
+     jo.jpg                   Jo (Hen, Isa Red)
+     john.jpg                 John (Rooster Chick, Isa Red)
+     kitty.jpg                Kitty (Hen, White Leghorn)
+     lawrence.jpg             Lawrence (Rooster, Isa Brown)
+     lydia.jpg                Lydia (Hen, Golden Comet)
+     mary.jpg                 Mary (Hen, Golden Comet)
+     meg.jpg                  Meg (Hen, Isa Red)
+     michael.jpg              Michael (Rooster Chick, White Leghorn)
+     moira.jpg                Moira (Hen Chick, Golden Comet)
+     peter.jpg                Peter (Rooster Chick, White Leghorn)
+     petunia.jpg              Petunia (Hen Teen, Isa Brown)
+     poppy.jpg                Poppy (Hen Teen, White Leghorn)
+     ron.jpg                  Ron (Rooster Teen, White Leghorn)
+     rose.jpg                 Rose (Hen Teen, Golden Comet)
+     violet.jpg               Violet (Hen Teen, Isa Brown)
+     wendy.jpg                Wendy (Hen Chick, Golden Comet)
+
+Optional: licensed brand font files (see README) go in frontend/public/fonts/:
+   MilkyVintage.woff2 (or .otf / .ttf)
+   APompadour.woff2   (or .otf / .ttf)

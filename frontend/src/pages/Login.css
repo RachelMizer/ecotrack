@@ -1,0 +1,20 @@
+.login-page { min-height: 100vh; display: flex; flex-direction: column; }
+.login-hero {
+  flex: 1; display: grid; place-items: center; padding: 2rem 16px;
+  /* Chicken background photo: add /public/images/login-chickens.jpg (see dev/images_needed.txt).
+     Until then the gradient below shows through. */
+  background:
+    linear-gradient(rgba(75, 44, 36, .25), rgba(75, 44, 36, .35)),
+    url("/images/login-chickens.jpg") center / cover no-repeat,
+    linear-gradient(160deg, #a98c85 0%, #6b8946 55%, #467f89 100%);
+}
+.login-card {
+  width: min(380px, 100%); background: #fff; border-radius: 8px; padding: 1.6rem 1.6rem 1.8rem;
+  box-shadow: 0 12px 40px rgba(40, 20, 15, .3); display: flex; flex-direction: column; gap: .9rem;
+}
+.login-logo { width: 200px; margin: 0 auto; display: block; }
+.login-tagline { text-align: center; margin: -.4rem 0 .4rem; font-family: var(--font-sub); color: var(--teal); }
+.login-card label { display: flex; flex-direction: column; gap: .25rem; font-family: var(--font-sub);
+  text-transform: uppercase; font-size: .78rem; letter-spacing: .06em; color: var(--bark); }
+.login-card input { font-size: 1rem; }
+.login-card .btn { margin-top: .4rem; padding: .7rem; }

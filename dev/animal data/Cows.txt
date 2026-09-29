@@ -1,0 +1,10 @@
+Cows
+(Gender, Name, Breed, Age, Calving/Not Calving, Location)
+Bull, Harold, Holstein, 4 yrs 3 mnths, N/A, Upper Enclosure
+Bull, Angus, Highland, 3 yrs 6 mnths, N/A, Upper Enclosure
+Heifer, Gertrude, Holstein, 2 yrs 2 mnths, Calving, Lower Enclosure
+Heifer, Maggie, Highland, 3 yrs 6 mnths, Not Calving, Lower Enclosure
+Heifer, Lucy, Simmental, 1 yr 8 mnths, Not Calving, Lower Enclosure
+Heifer Calf, Edith, Holstein, 6 mnths, Not Calving, Lower Enclosure
+Bull Calf, Chuck, Holstein, 6 mnths, Not Calving, Lower Enclosure
+Heifer Calf, 7 mnths, Not Calving, Lower Enclosure

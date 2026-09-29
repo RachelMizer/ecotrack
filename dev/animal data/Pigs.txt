@@ -1,0 +1,19 @@
+Pigs:
+(Gender, Name, Breed, Age, Weight, Location)
+
+Adult Pigs
+Sow, Hamela Anderson, Red Wattle Hog, 2 yrs, 285 lbs, Cloverfield Pasture
+Boar, Kevin Bacon, Mulefoot Hog, 3 yrs, 310 lbs, Cloverfield Pasture
+
+Piglets
+(Gender, Name, Breed, Age in Days, Weight, Location)
+
+Sow Piglet, Piggy Minaj, Red Wattle Hog, 14 days, 3.2 lbs, Cloverfield Farrowing Barn
+Sow Piglet, Hogatha Christie, Red Wattle Hog, 14 days, 3.5 lbs, Cloverfield Farrowing Barn
+Sow Piglet, Porkahontas, Red Wattle Hog, 14 days, 3.1 lbs, Cloverfield Farrowing Barn
+
+Boar Piglet, Sir Oinks-A-Lot, Red Wattle Hog, 14 days, 3.8 lbs, Cloverfield Farrowing Barn
+Boar Piglet, Hogwarts, Red Wattle Hog, 14 days, 4.0 lbs, Cloverfield Farrowing Barn
+Boar Piglet, Pork Solo, Red Wattle Hog, 14 days, 3.6 lbs, Cloverfield Farrowing Barn
+Boar Piglet, Hamlet, Red Wattle Hog, 14 days, 3.9 lbs, Cloverfield Farrowing Barn
+Boar Piglet, Bacon Bill, Red Wattle Hog, 14 days, 3.4 lbs, Cloverfield Farrowing Barn
