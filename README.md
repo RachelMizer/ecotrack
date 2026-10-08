@@ -11,7 +11,7 @@ schedule that adapts to each animal.
 | Database | PostgreSQL (SQLite fallback locally) | — |
 | Backend / API | Django 6.1 + Django REST Framework | `backend/` |
 | Frontend | React 19 + Vite, Recharts, React Router | `frontend/` |
-| Backend hosting | Railway | `backend/railway.json` |
+| Backend hosting | Railway | `backend/Procfile` |
 | Frontend hosting | Netlify | `netlify.toml` |
 
 ## Run it locally
@@ -61,11 +61,11 @@ the day it runs.
 
 **Railway (API)**
 1. New project from the GitHub repo, with the service's root directory set to `backend`.
-2. Add a PostgreSQL database. Railway injects `DATABASE_URL`.
+2. Add a PostgreSQL database and set `DATABASE_URL` on the API service to the reference `${{Postgres.DATABASE_URL}}`.
 3. Set the variables listed in `backend/.env.example` (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG=false`, `DJANGO_ALLOWED_HOSTS`,
    `CSRF_TRUSTED_ORIGINS`, `CORS_ALLOWED_ORIGINS` = your Netlify URL).
-4. Deploy. `railway.json` runs migrations and collectstatic, then starts gunicorn.
-5. Run `python manage.py seed_farm` once from the Railway shell.
+4. Deploy. The `Procfile` runs migrations and collectstatic, then starts gunicorn.
+5. Run `python manage.py seed_farm` once over `railway ssh` (it wipes farm data, so never on every deploy).
 
 **Netlify (web)**: import the repo. `netlify.toml` builds `frontend/`. Set `VITE_API_URL` to the Railway URL.
 

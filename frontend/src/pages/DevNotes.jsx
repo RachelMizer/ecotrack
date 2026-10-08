@@ -106,7 +106,7 @@ export default function DevNotes() {
 
       <h2>Deployment</h2>
       <ul>
-        <li><b>Railway (API):</b> set root directory to <code>backend</code>, add a PostgreSQL plugin, and set <code>DJANGO_SECRET_KEY</code>, <code>DJANGO_DEBUG=false</code>, <code>DJANGO_ALLOWED_HOSTS</code> and <code>CORS_ALLOWED_ORIGINS</code>. <code>railway.json</code> runs migrations and collectstatic on deploy.</li>
+        <li><b>Railway (API):</b> set root directory to <code>backend</code>, add a PostgreSQL database, and set <code>DATABASE_URL</code> (reference <code>{'${{Postgres.DATABASE_URL}}'}</code>), <code>DJANGO_SECRET_KEY</code>, <code>DJANGO_DEBUG=false</code>, <code>DJANGO_ALLOWED_HOSTS</code> and <code>CORS_ALLOWED_ORIGINS</code>. The <code>Procfile</code> runs migrations and collectstatic on each start.</li>
         <li><b>Netlify (web):</b> <code>netlify.toml</code> at the repo root builds <code>frontend</code>. Set <code>VITE_API_URL</code> to the Railway URL.</li>
       </ul>
     </div>
