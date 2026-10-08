@@ -12,7 +12,8 @@
 .zone rect.run { fill: rgba(169, 140, 133, .12); stroke: #a98c85; stroke-width: 1; stroke-dasharray: 3 3; }
 .zone-tag rect { fill: #fffdf9; fill-opacity: .92; stroke: #a98c85; stroke-width: .75; }
 .zone-label { font-family: var(--font-sub); fill: var(--bark); }
-.dot { cursor: pointer; }
+.dot { cursor: pointer; transition: transform 1.2s ease-in-out; }
+@media (prefers-reduced-motion: reduce) { .dot { transition: none; } }
 .dot:hover circle:nth-child(2), .dot:focus circle:nth-child(2) { stroke: var(--bark); }
 .dot:focus { outline: none; }
 .dot-label { font-family: var(--font-body); fill: var(--ink); paint-order: stroke; stroke: #fffdf9; stroke-width: 3px; pointer-events: none; }

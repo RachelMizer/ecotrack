@@ -1,3 +1,5 @@
+import math
+import random
 from datetime import date, timedelta
 
 from django.contrib.auth import authenticate
@@ -186,6 +188,35 @@ class ZoneList(generics.ListAPIView):
     pagination_class = None
 
 
+LIVE_STRIDE = {"chicken": 12, "cow": 28, "pig": 18}  # wander radius in map units
+
+
+def live_position(animal, x, y, now):
+    """Simulated live fix: a smooth, deterministic wander around the last stored ping.
+
+    Stands in for real tracker hardware so the map moves between refreshes. Every
+    viewer gets the same position for the same moment, and nothing is saved.
+    """
+    z = animal.zone
+    box = (z.roam_x, z.roam_y, z.roam_width, z.roam_height) if z.roam_x is not None else (z.x, z.y, z.width, z.height)
+    hour = timezone.localtime(now).hour
+    if animal.species == "chicken" and (hour >= 20 or hour < 6):
+        box = (z.x, z.y, z.width, z.height)  # roosting in the coop overnight
+    rng = random.Random(animal.id)
+    reach = LIVE_STRIDE[animal.species] * (0.4 if animal.health_status == Animal.Health.SICK else 1)
+    t = now.timestamp()
+
+    def wave():
+        slow, fast = rng.uniform(90, 150), rng.uniform(35, 60)  # periods in seconds
+        a, b = rng.uniform(0, math.tau), rng.uniform(0, math.tau)
+        return 0.65 * math.sin(math.tau * t / slow + a) + 0.35 * math.sin(math.tau * t / fast + b)
+
+    bx, by, bw, bh = box
+    clamp = lambda v, lo, size: min(max(v, lo + 2), lo + size - 2)
+    cx, cy = clamp(x, bx, bw), clamp(y, by, bh)
+    return round(clamp(cx + reach * wave(), bx, bw), 1), round(clamp(cy + reach * wave(), by, bh), 1)
+
+
 @api_view(["GET"])
 def tracking(request):
     try:
@@ -201,8 +232,12 @@ def tracking(request):
     for p in pings.values_list("animal_id", "timestamp", "x", "y"):
         tracks.setdefault(p[0], []).append([p[1], p[2], p[3]])
     animals = Animal.objects.select_related("zone").filter(id__in=tracks.keys())
+    now = timezone.now()
+    for a in animals:
+        _, x, y = tracks[a.id][-1]
+        tracks[a.id].append([now, *live_position(a, x, y, now)])
     return Response({
-        "latest": latest,
+        "latest": now,
         "animals": [
             {"slug": a.slug, "name": a.name, "species": a.species, "zone": a.zone.name, "area": a.zone.area,
              "type_label": a.type_label, "health_status": a.health_status, "track": tracks[a.id]}

@@ -50,7 +50,7 @@ export default function Tracker() {
   const [hover, setHover] = useState(null)
   const wrap = useRef(null)
   const zones = useApi('/api/zones/')
-  const tracking = useApi('/api/tracking/', { hours: Math.max(hours, 1) })
+  const tracking = useApi('/api/tracking/', { hours: Math.max(hours, 1) }, { refreshMs: 5000 })
 
   const target = area ? fit(AREAS[area].box) : FULL
   const box = useAnimatedBox(target)
@@ -176,17 +176,17 @@ export default function Tracker() {
             const [, x, y] = a.track[a.track.length - 1]
             const sp = speciesByKey[a.species]
             return (
-              <g key={a.slug} className="dot" onClick={() => goTo(a)} onMouseMove={(e) => onMove(e, a)}
+              <g key={a.slug} className="dot" style={{ transform: `translate(${x}px, ${y}px)` }} onClick={() => goTo(a)} onMouseMove={(e) => onMove(e, a)}
                 role="link" tabIndex={0} aria-label={`${a.name}, ${sp.single}, ${a.zone}. Open profile.`}
                 onKeyDown={(e) => e.key === 'Enter' && goTo(a)}
                 onFocus={() => setHover(null)}>
-                <circle cx={x} cy={y} r={12 * scale} fill="transparent" />
-                <circle cx={x} cy={y} r={5.5 * scale} fill={sp.hex} stroke="#fffdf9" strokeWidth={2 * scale} />
+                <circle r={12 * scale} fill="transparent" />
+                <circle r={5.5 * scale} fill={sp.hex} stroke="#fffdf9" strokeWidth={2 * scale} />
                 {a.health_status === 'sick' && (
-                  <circle cx={x} cy={y} r={9 * scale} fill="none" stroke="#b3261e" strokeWidth={1.5 * scale} strokeDasharray={`${3 * scale} ${2 * scale}`} />
+                  <circle r={9 * scale} fill="none" stroke="#b3261e" strokeWidth={1.5 * scale} strokeDasharray={`${3 * scale} ${2 * scale}`} />
                 )}
                 {area && (
-                  <text x={x + 8 * scale} y={y + 4 * scale} fontSize={11 * scale} className="dot-label">{a.name}</text>
+                  <text x={8 * scale} y={4 * scale} fontSize={11 * scale} className="dot-label">{a.name}</text>
                 )}
               </g>
             )
@@ -205,7 +205,7 @@ export default function Tracker() {
         { label: 'Dashed red ring = sick', color: '#b3261e' }]} />
       {tracking.data?.latest && (
         <p className="muted small">Latest tracker sync: {formatDate(tracking.data.latest.slice(0, 10))}{' '}
-          {new Date(tracking.data.latest).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}. Fixes every 30 minutes.</p>
+          {new Date(tracking.data.latest).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}. Positions refresh every 5 seconds.</p>
       )}
 
       <h2>{area ? `Animals in the ${AREAS[area].label.toLowerCase()} area` : 'All tracked animals'}</h2>
