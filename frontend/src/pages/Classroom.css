@@ -1,0 +1,58 @@
+/* Classes, volunteers, people, assignments and My Schedule. */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .8rem 1rem; }
+.form-grid label, .stack-form label { display: flex; flex-direction: column; gap: .2rem; font-family: var(--font-sub);
+  text-transform: uppercase; font-size: .72rem; letter-spacing: .06em; color: var(--bark); }
+.form-grid .wide { grid-column: 1 / -1; }
+.form-grid input, .form-grid select, .form-grid textarea { width: 100%; }
+.form-actions { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-top: 1rem; }
+.hint { font-family: var(--font-body); text-transform: none; letter-spacing: 0; font-size: .8rem; color: var(--ink-2); }
+
+.notice { background: var(--teal-tint); border-left: 4px solid var(--teal); border-radius: 4px; padding: .7rem 1rem; margin: 0 0 1rem; }
+.temp-pass { font-size: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: .05rem .4rem; user-select: all; }
+
+.info-list { display: grid; grid-template-columns: minmax(110px, 170px) 1fr; gap: .5rem 1rem; margin: 0; }
+.info-list dt { font-family: var(--font-sub); text-transform: uppercase; font-size: .72rem; letter-spacing: .06em; color: var(--ink-3); padding-top: .15rem; }
+.info-list dd { margin: 0; }
+.person-head { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; justify-content: center; margin-bottom: 1rem; }
+.person-head h1 { margin: 0; }
+
+.class-card { display: flex; flex-direction: column; gap: .3rem; text-decoration: none; color: inherit; transition: box-shadow .15s, border-color .15s; }
+.class-card:hover { border-color: var(--teal); box-shadow: 0 4px 14px rgba(75, 44, 36, .1); }
+.class-card h3 { font-family: var(--font-head); text-transform: none; letter-spacing: 0; color: var(--brown); font-size: 1.4rem; font-weight: 400; margin: 0; }
+.class-meta { display: flex; flex-wrap: wrap; gap: .3rem .8rem; font-size: .85rem; color: var(--ink-2); }
+.term-group { margin-bottom: 2rem; }
+.term-group > h2 { margin-top: 1rem; }
+
+.task-name { white-space: nowrap; }
+.duty-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.duty { display: grid; grid-template-columns: 92px 1fr auto; gap: .4rem 1rem; align-items: start; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: .7rem .9rem; }
+.duty.overdue { border-left: 4px solid var(--critical); }
+.duty-time { font-weight: 600; color: var(--bark); }
+.duty-done { display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; }
+.duty-done form { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: flex-end; align-items: center; }
+.duty-done input { width: 110px; }
+.day-head { font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .06em; color: var(--brown); font-size: .9rem; margin: 1.4rem 0 .5rem; }
+@media (max-width: 640px) {
+  .duty { grid-template-columns: 1fr; }
+  .duty-done { align-items: flex-start; }
+  .duty-done form { justify-content: flex-start; }
+}
+
+/* Dashboard bulletin */
+.bulletin { background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--mauve); border-radius: var(--radius);
+  padding: .8rem 1.1rem; margin: 0 auto 1.6rem; max-width: 900px; }
+.bulletin-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .3rem 1rem; }
+.bulletin-head h2 { margin: 0; font-size: 1rem; text-align: left; color: var(--brown); }
+.bulletin ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+.bulletin li { padding: .45rem 0; border-top: 1px dashed var(--line); }
+.bulletin li:first-child { border-top: 0; }
+.bulletin li b { color: var(--bark); }
+.bulletin p { margin: .15rem 0 0; font-size: .9rem; }
+
+/* Assignment form: animal picker */
+.animal-pick { border: 1px solid var(--line); border-radius: 4px; padding: .5rem .8rem .7rem; margin: 0; }
+.animal-pick legend { font-family: var(--font-sub); text-transform: uppercase; font-size: .72rem; letter-spacing: .06em; color: var(--bark); padding: 0 .3rem; }
+.animal-checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .2rem 1rem; max-height: 220px; overflow-y: auto; }
+.animal-checks .check { display: flex; align-items: baseline; gap: .35rem; font-size: .9rem; cursor: pointer;
+  font-family: var(--font-body); text-transform: none; letter-spacing: 0; color: var(--ink); flex-direction: row; }

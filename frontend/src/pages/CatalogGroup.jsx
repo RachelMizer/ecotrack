@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom'
 import { AnimalPhoto, ErrorNote, GroupTabs, HealthPill } from '../components/bits'
+import { DutyStatus } from '../components/duties'
 import { api } from '../lib/api'
+import { formatStamp, formatTime, TASKS } from '../lib/duties'
 import { formatAge, formatDate, formatWeight, speciesByGroup, tempStatus } from '../lib/farm'
 import { useApi } from '../lib/useApi'
 import './Catalog.css'
@@ -103,6 +105,7 @@ function AnimalCard({ a, group, highlight }) {
           {a.dam && <Stat label="Dam">{a.dam}</Stat>}
         </dl>
         {a.notes && <p className="small muted" style={{ marginBottom: 0 }}>{a.notes}</p>}
+        <Duties a={a} group={group} />
         {(current.length > 0 || activeTx.length > 0) && (
           <div className="care">
             {current.map((e) => (
@@ -121,6 +124,39 @@ function AnimalCard({ a, group, highlight }) {
         )}
       </div>
     </article>
+  )
+}
+
+/** Student and volunteer assignments for this animal: what's coming up and who did the last ones. */
+function Duties({ a, group }) {
+  const upcoming = a.duties.filter((d) => d.status === 'scheduled').slice(0, 3)
+  const recent = a.duties.filter((d) => d.status !== 'scheduled').sort((x, y) => y.due_date.localeCompare(x.due_date)).slice(0, 3)
+  return (
+    <div className="care duties">
+      <div className="duties-head">
+        <span>Assigned care</span>
+        <Link className="arrow-link" to={`/catalog/${group}/${a.slug}/care`}>care history →</Link>
+      </div>
+      {upcoming.length === 0 && recent.length === 0 && <div className="muted">No duties in the last month.</div>}
+      <ul>
+        {upcoming.map((d) => <DutyLine key={d.id} d={d} />)}
+        {recent.map((d) => <DutyLine key={d.id} d={d} />)}
+      </ul>
+    </div>
+  )
+}
+
+function DutyLine({ d }) {
+  const t = TASKS[d.task]
+  return (
+    <li>
+      <span aria-hidden>{t?.icon}</span> {t?.label}{' '}
+      <span className="muted">· {d.assignee_name} ({d.veterinarian ? `Instructor with ${d.veterinarian}` : d.assignee_role})</span>{' '}
+      {d.status === 'completed'
+        ? <span className="muted">· done {formatStamp(d.completed_at)}</span>
+        : <span className="muted">· due {formatDate(d.due_date)}{d.due_time && ` ${formatTime(d.due_time)}`}</span>}{' '}
+      <DutyStatus status={d.status} />
+    </li>
   )
 }
 

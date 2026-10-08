@@ -4,13 +4,17 @@ Populate the database with the EcoTrack farm.
     python manage.py seed_farm            # wipe farm data and reseed
     python manage.py seed_farm --keep-user
 
+Classes, rosters, assignments and farm updates are wiped and reseeded too, along with
+the seeded students and volunteers. Other accounts are never deleted, and existing
+accounts keep their passwords.
+
 Output is deterministic for a given run date (fixed RNG seed). Ages in the
 source files are measured back from the day the command runs.
 """
 
 import math
 import random
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
@@ -20,8 +24,8 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from farm.models import (
-    Animal, Feeder, FeederContent, HealthEvent, Incubator, IncubatorEgg, LocationPing, TemperatureRecord,
-    Treatment, UserProfile, WeightRecord, Zone,
+    Animal, Assignment, Course, FarmUpdate, Feeder, FeederContent, HealthEvent, Incubator, IncubatorEgg, LocationPing,
+    Role, TemperatureRecord, Treatment, UserProfile, WeightRecord, Zone, season_of,
 )
 
 from . import farm_data as D
@@ -95,16 +99,18 @@ class Command(BaseCommand):
     help = "Wipe and reseed the EcoTrack farm data."
 
     def add_arguments(self, parser):
-        parser.add_argument("--keep-user", action="store_true", help="Do not touch the demo user.")
+        parser.add_argument("--keep-user", action="store_true",
+                            help="Leave the demo accounts' names and details as they are.")
 
     @transaction.atomic
     def handle(self, *args, **opts):
         self.rng = random.Random(20260929)
         self.today = date.today()
 
-        for model in (IncubatorEgg, Incubator, LocationPing, TemperatureRecord, WeightRecord, Treatment, HealthEvent,
-                      FeederContent, Feeder, Animal, Zone):
+        for model in (Assignment, FarmUpdate, Course, IncubatorEgg, Incubator, LocationPing, TemperatureRecord,
+                      WeightRecord, Treatment, HealthEvent, FeederContent, Feeder, Animal, Zone):
             model.objects.all().delete()
+        get_user_model().objects.filter(email__iendswith="@" + D.SEED_EMAIL_DOMAIN).delete()
 
         zones = self.seed_zones()
         animals = self.seed_animals(zones)
@@ -114,14 +120,15 @@ class Command(BaseCommand):
         self.seed_tracking(animals)
         self.seed_feeders(zones)
         self.seed_incubator(zones, animals)
-        if not opts["keep_user"]:
-            self.seed_user()
+        demo, instructor = self.seed_users(keep=opts["keep_user"])
+        self.seed_classroom(animals, demo, instructor)
 
         self.stdout.write(self.style.SUCCESS(
             f"Seeded {Animal.objects.count()} animals, {WeightRecord.objects.count()} weights, "
             f"{TemperatureRecord.objects.count()} temperatures, {Treatment.objects.count()} treatments, "
             f"{LocationPing.objects.count()} tracker pings, {Feeder.objects.count()} feeders, "
-            f"{IncubatorEgg.objects.count()} incubating eggs."
+            f"{IncubatorEgg.objects.count()} incubating eggs, {Course.objects.count()} classes, "
+            f"{Assignment.objects.count()} assignments."
         ))
 
     def day(self, offset):
@@ -306,21 +313,157 @@ class Command(BaseCommand):
                 shell=shell, candling=candling, notes=egg_notes,
             )
 
-    # ----------------------------------------------------------------------- user
-    def seed_user(self):
-        User = get_user_model()
-        user, created = User.objects.get_or_create(
-            username=DEMO_USERNAME,
-            defaults={"first_name": "Rachel", "last_name": "Mizer", "email": "rachel@ecotrack.example"},
-        )
+    # ----------------------------------------------------------------------- users
+    def demo_account(self, username, details, keep, admin=False):
+        """Create a demo login, or reuse it. Existing accounts keep their password."""
+        user, created = get_user_model().objects.get_or_create(username=username, defaults=details)
         if created:
             user.set_password(DEMO_PASSWORD)
-            user.is_staff = True
-            user.is_superuser = True
+            user.is_staff = user.is_superuser = admin
             user.save()
-            self.stdout.write(f"Created demo user '{DEMO_USERNAME}' / '{DEMO_PASSWORD}'")
-        UserProfile.objects.update_or_create(
-            user=user,
-            defaults={"farm_name": "EcoTrack Demo Farm", "role": "Farm Owner",
-                      "phone": "", "farm_address": ""},
-        )
+            self.stdout.write(f"Created demo user '{username}' / '{DEMO_PASSWORD}'")
+        elif not keep:
+            get_user_model().objects.filter(pk=user.pk).update(**details)
+        return user, created or not keep
+
+    def seed_users(self, keep):
+        demo, fresh = self.demo_account(
+            DEMO_USERNAME, {"first_name": "Rachel", "last_name": "Mizer", "email": "rachel@ecotrack.example"},
+            keep, admin=True)
+        profile, _ = UserProfile.objects.get_or_create(user=demo)
+        profile.role = Role.STUDENT
+        if fresh:
+            profile.farm_name, profile.phone, profile.farm_address = "EcoTrack Demo Farm", "", ""
+        profile.save()
+
+        info = D.INSTRUCTOR
+        instructor, fresh = self.demo_account(
+            info["username"], {k: info[k] for k in ("first_name", "last_name", "email")}, keep)
+        profile, _ = UserProfile.objects.get_or_create(user=instructor)
+        profile.role = Role.INSTRUCTOR
+        if fresh:
+            for k in ("phone", "office_location", "office_hours", "message"):
+                setattr(profile, k, info[k])
+        profile.save()
+
+        # The demo student also volunteered over the summer.
+        UserProfile.objects.filter(user=demo).update(volunteer=True, supervisor=instructor)
+        return demo, instructor
+
+    def seed_person(self, first, last, role, **profile):
+        email = f"{first}.{last}@{D.SEED_EMAIL_DOMAIN}".lower()
+        user = get_user_model().objects.create_user(username=email, email=email, first_name=first, last_name=last)
+        user.set_unusable_password()  # an instructor resets it to hand out a temporary password
+        user.save()
+        UserProfile.objects.create(user=user, role=role, **profile)
+        return user
+
+    # ----------------------------------------------------------------------- classroom
+    def terms(self):
+        """The two most recent 16-week semesters (spring from mid-January, fall from late August)."""
+        def monday_from(d):
+            return d + timedelta(days=(7 - d.weekday()) % 7)
+
+        y = self.today.year
+        starts = sorted(monday_from(date(yr, m, d)) for yr in (y - 1, y) for m, d in ((1, 12), (8, 20)))
+        starts = [s for s in starts if s <= self.today][-2:]
+        return [(s, s + timedelta(weeks=16)) for s in starts]
+
+    def seed_classroom(self, animals, demo, instructor):
+        rng = self.rng
+        students = [self.seed_person(first, last, Role.STUDENT) for first, last in D.STUDENTS]
+
+        (prev_start, prev_end), (cur_start, cur_end) = self.terms()
+        pools = []
+        for (start, end), courses, extra in (((prev_start, prev_end), D.COURSES_PREVIOUS, []),
+                                             ((cur_start, cur_end), D.COURSES_CURRENT, [demo])):
+            pool = list(extra)
+            for n, (name, section, desc, idx) in enumerate(courses):
+                course = Course.objects.create(name=name, section=section, description=desc, term_start=start,
+                                               term_end=end, instructor=instructor)
+                roster = [students[i] for i in idx] + (extra if n == 0 else [])
+                course.students.add(*roster)
+                pool += roster
+            pools.append((start, end, sorted(set(pool), key=lambda u: u.pk)))
+
+        volunteers = [demo] + [students[i] for i in D.VOLUNTEER_STUDENTS]
+        UserProfile.objects.filter(user__in=volunteers[1:]).update(volunteer=True, supervisor=instructor)
+        volunteers += [self.seed_person(first, last, Role.VOLUNTEER, volunteer=True, supervisor=instructor,
+                                        phone=phone) for first, last, phone in D.VOLUNTEERS]
+
+        summer_year = self.today.year if self.today >= date(self.today.year, 6, 1) else self.today.year - 1
+        periods = [pools[0], (date(summer_year, 6, 1), date(summer_year, 8, 15), volunteers), pools[1]]
+
+        tasks = self.plan_tasks(animals, periods, instructor)
+        Assignment.objects.bulk_create(tasks, batch_size=1000)
+
+        # Make sure the demo student has something to do today.
+        todays = [t for t in Assignment.objects.filter(due_date=self.today, completed_at__isnull=True)
+                  .exclude(assignee=instructor).order_by("due_time")]
+        for t in todays[:2]:
+            t.assignee = demo
+            t.save(update_fields=["assignee"])
+
+        for days_ago, title, body in D.FARM_UPDATES:
+            post = FarmUpdate.objects.create(author=instructor, title=title, body=body)
+            FarmUpdate.objects.filter(pk=post.pk).update(
+                created_at=timezone.now() - timedelta(days=days_ago, hours=rng.randint(1, 6)))
+
+    def plan_tasks(self, animals, periods, instructor):
+        rng = self.rng
+        T = Assignment.Task
+        horizon = self.today + timedelta(days=14)
+        now = timezone.localtime()
+        feeders = list(Feeder.objects.all())
+        treatments = list(Treatment.objects.select_related("animal"))
+        events = list(HealthEvent.objects.select_related("animal"))
+        animal_list = sorted(animals.values(), key=lambda a: a.pk)
+        out = []
+
+        def add(task, day, pool, at, animal=None, feeder=None, treatment=None, notes=""):
+            if task in Assignment.VOLUNTEER_TASKS or season_of(day) != "summer":
+                assignee, vet = rng.choice(pool), ""
+            else:
+                assignee, vet = instructor, D.SUMMER_VET  # vet work in summer is done with the instructor
+            hh, mm = map(int, at.split(":"))
+            due = timezone.make_aware(datetime.combine(day, time(hh, mm)))
+            done = None
+            if due < now and rng.random() < (0.95 if day < self.today else 0.6):
+                done = due + timedelta(minutes=rng.randint(5, 95))
+            out.append(Assignment(task=task, assignee=assignee, assigned_by=instructor, animal=animal, feeder=feeder,
+                                  treatment=treatment, due_date=day, due_time=time(hh, mm), notes=notes,
+                                  veterinarian=vet, completed_at=done))
+
+        for start, end, pool in periods:
+            last = min(end, horizon)
+            if start > last:
+                continue
+            span = (last - start).days
+            for offset in range(span + 1):
+                day = start + timedelta(days=offset)
+                for i, f in enumerate(feeders):
+                    if offset % f.refill_interval_days == i % f.refill_interval_days:
+                        add(T.REFILL_FEEDER, day, pool, rng.choice(["07:00", "07:30", "16:00"]), feeder=f)
+                if day.weekday() > 4:
+                    continue
+                for j, a in enumerate(animal_list):
+                    # One check per animal per week, alternating weigh-ins and temperatures.
+                    if day.weekday() == j % 5 and day >= a.birth_date:
+                        task = T.WEIGHTS if (offset // 7 + j) % 2 else T.TEMPERATURES
+                        add(task, day, pool, rng.choice(["08:00", "09:00", "10:30", "13:00"]), animal=a)
+            for a in animal_list:
+                day = start + timedelta(days=rng.randint(5, max(5, span - 5)))
+                if a.birth_date <= day <= last:
+                    add(T.ROUTINE_EXAM, day, pool, rng.choice(["09:30", "13:30", "15:00"]), animal=a,
+                        notes="Body condition, eyes, coat, feet and gait.")
+            for t in treatments:
+                if start <= t.start_date <= last:
+                    task = {"vaccine": T.VACCINATION, "medication": T.MEDICATION}.get(t.kind, T.SPECIAL_FEEDING)
+                    add(task, t.start_date, pool, (t.times.split(",")[0].strip() or "09:00"), animal=t.animal,
+                        treatment=t, notes=f"{t.name}: {t.dose}".strip(": "))
+            for e in events:
+                day = e.start_date + timedelta(days=1)
+                if start <= day <= last:
+                    add(T.SPECIAL_EXAM, day, pool, "11:00", animal=e.animal,
+                        notes=f"Follow-up on {e.condition.lower()}.")
+        return out

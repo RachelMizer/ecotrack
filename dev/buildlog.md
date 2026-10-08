@@ -66,10 +66,24 @@ No new Python or npm packages, so `pip install` and `npm install` aren't needed.
 - Dashboard: tightened padding on the status pills in the Health tile's "Needs attention" list
 - Committed and pushed to GitHub as `d4296cb` ("Add incubator to catalog; tidy account page and dashboard pills"). The push also brought up `0f13fdd` (Ham Solo rename), which hadn't been pushed yet. Site 1 needs to migrate and reseed (see **Pending: Site 1 machine** above)
 
+### 2026-10-08 (`C:\EcoTrack`)
+- Deployed: API on Railway (https://ecotrack-production-4729.up.railway.app, Postgres) and web on Netlify (https://rmecotrack.netlify.app). Repo renamed to `RachelMizer/ecotrack`
+- Railway ignored `backend/railway.json` (it only reads config at the repo root), so the `Procfile` now runs `migrate` and `collectstatic` before gunicorn and `railway.json` is gone. Railway auto-deploy didn't fire on push; deploys were started with `railway redeploy --from-source`
+- Tracker: positions refresh every 5 seconds with a simulated live fix (smooth wander inside each animal's zone), dots glide between fixes
+- Roles and classroom features from `dev/10-8 updates.txt` (migration `0003_roles_classes_assignments`):
+  - Roles: Student (all existing accounts), Volunteer, Instructor. Demo logins `rachel` (student, also a summer volunteer) and `instructor`
+  - Instructor pages: **Classes** (classes by term, create/edit, rosters, add students with a temporary password), **Summer volunteers** tab, **Person** page (details, responsibility schedule, fulfillment history, reset password), **Assignments** (8 task types, several animals at once, daily/weekly repeats)
+  - Student/volunteer page: **My Schedule** (tasks by day, links to the animal or feeder, timestamped mark-complete; weights/temperatures can record a reading, refills top up the feeder)
+  - Account: instructor office location, hours and message; students and volunteers see their class and instructor; change password
+  - Dashboard: Farm Updates bulletin above the herd overview. Animal cards show assigned care with a care-history page; feeder cards show who refilled last and who's next
+  - Seasons: 16-week spring and fall semesters; summer is June 1 to August 15, when volunteers do refills, special feedings and weights and a vet does the rest with the instructor
+  - Seed: 2 current classes + 1 previous, 16 students, 5 volunteers (2 non-students), ~1,300 assignments across spring, summer and fall, 3 farm updates
+
 ---
 
 ## Next Up
 - [ ] Add 44 photos listed in `images_needed.txt` (login chicken background + one per animal)
 - [ ] Add licensed Milky Vintage / A Pompadour font files to `frontend/public/fonts/`
 - [ ] Review `medication_suggestions.md` and name the unnamed heifer calf
-- [ ] Deploy API to Railway (Postgres) and web to Netlify (code is on GitHub; run `migrate` and `seed_farm` on Railway after the first deploy)
+- [x] Deploy API to Railway (Postgres) and web to Netlify (code is on GitHub; run `migrate` and `seed_farm` on Railway after the first deploy)
+- [ ] Turn Railway auto-deploy back on (service Settings → Source) so pushes to `main` redeploy the API

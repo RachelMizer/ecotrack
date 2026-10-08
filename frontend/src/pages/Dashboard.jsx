@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ErrorNote, HealthPill } from '../components/bits'
+import FarmUpdates from '../components/FarmUpdates'
 import ScatterPanel from '../components/ScatterPanel'
 import { formatDate, SPECIES, speciesByKey, tempRange, toISO } from '../lib/farm'
 import { useApi } from '../lib/useApi'
@@ -95,6 +96,7 @@ export default function Dashboard() {
   const s = summary.data
   return (
     <>
+      <FarmUpdates />
       <h1 style={{ marginBottom: '.75rem' }}>Herd at a Glance</h1>
       <ErrorNote error={temps.error || weights.error || summary.error} />
 

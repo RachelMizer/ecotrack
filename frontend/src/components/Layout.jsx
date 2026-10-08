@@ -20,7 +20,7 @@ export function Footer() {
 }
 
 export default function Layout() {
-  const { logout } = useAuth()
+  const { logout, role } = useAuth()
   const navigate = useNavigate()
   const onLogout = async () => {
     await logout()
@@ -37,6 +37,9 @@ export default function Layout() {
           <NavLink to="/tracker">Tracker</NavLink>
           <NavLink to="/nutrition">Nutrition</NavLink>
           <NavLink to="/schedule">Schedule</NavLink>
+          {role === 'instructor' && <NavLink to="/classes">Classes</NavLink>}
+          {role === 'instructor' && <NavLink to="/assignments">Assignments</NavLink>}
+          {(role === 'student' || role === 'volunteer') && <NavLink to="/my-schedule">My Schedule</NavLink>}
           <span className="acct">
             <NavLink to="/account">Account</NavLink>
             <button type="button" onClick={onLogout}>Logout</button>

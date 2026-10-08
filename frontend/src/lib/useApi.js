@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { api } from './api'
 
 /**
@@ -7,11 +7,13 @@ import { api } from './api'
  * their frame instead of flashing.
  *
  * With `refreshMs`, the data is also refetched quietly on that interval (no
- * `loading` flag) while the tab is visible.
+ * `loading` flag) while the tab is visible. Call `reload()` after a change.
  */
 export function useApi(path, params, { refreshMs } = {}) {
-  const key = path ? path + JSON.stringify(params || {}) : null
+  const [nonce, setNonce] = useState(0)
+  const key = path ? path + JSON.stringify(params || {}) + nonce : null
   const [state, setState] = useState({ data: null, error: null, loading: !!path })
+  const reload = useCallback(() => setNonce((n) => n + 1), [])
 
   useEffect(() => {
     if (!key) return
@@ -31,5 +33,5 @@ export function useApi(path, params, { refreshMs } = {}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, refreshMs])
 
-  return state
+  return { ...state, reload }
 }

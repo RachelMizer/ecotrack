@@ -314,3 +314,52 @@ INCUBATOR_EGGS = [
      "First candling due on day 7."),
     (10, "Jane", -7, -5, 0, "white", "large", 62.0, "Smooth", "not_candled", "First candling due on day 7."),
 ]
+
+# --------------------------------------------------------------------------- classroom
+# Demo people are fictional. Seeded students and volunteers use the SEED_EMAIL_DOMAIN so
+# a reseed can find and replace them without touching real accounts.
+SEED_EMAIL_DOMAIN = "student.ecotrack.example"
+
+INSTRUCTOR = {
+    "username": "instructor", "first_name": "Dana", "last_name": "Whitfield", "email": "instructor@ecotrack.example",
+    "phone": "(555) 010-4410", "office_location": "Agriculture Science Building, Room 112",
+    "office_hours": "Mon & Wed 1:00–3:00 pm, Fri 10:00–11:00 am, or by appointment",
+    "message": "Welcome to the farm! Check My Schedule before every lab and mark tasks complete as soon as you "
+               "finish them. Wear boots, wash up between pens, and tell me right away if an animal seems off.",
+}
+
+SUMMER_VET = "Dr. Elena Ruiz, DVM"
+
+# (first, last). The demo account (rachel) is added to the current-term class too.
+STUDENTS = [
+    ("Aiden", "Brooks"), ("Maya", "Castillo"), ("Owen", "Fischer"), ("Priya", "Natarajan"), ("Lucas", "Moreau"),
+    ("Hannah", "Kowalski"), ("Jamal", "Washington"), ("Sofia", "Lindqvist"), ("Ethan", "Okafor"),
+    ("Grace", "Tanaka"), ("Noah", "Delgado"), ("Ava", "Sullivan"), ("Caleb", "Harper"), ("Zoe", "Abernathy"),
+    ("Mateo", "Rossi"), ("Lily", "Chen"),
+]
+
+# Classes per term: (name, section, description, student indexes into STUDENTS).
+COURSES_PREVIOUS = [
+    ("Veterinary Science I", "01", "Intro to livestock health: handling, vital signs, vaccination programs and "
+     "record keeping.", [0, 1, 2, 3, 4, 5, 6, 7]),
+]
+COURSES_CURRENT = [
+    ("Veterinary Science II", "01", "Applied animal health: medication administration, exams, nutrition plans "
+     "and herd records.", [0, 1, 2, 3, 8, 9]),
+    ("Animal Husbandry", "02", "Daily care of poultry, swine and cattle: feeding, housing, weights and "
+     "temperatures.", [10, 11, 12, 13, 14, 15]),
+]
+
+# Summer volunteers: students by index, plus people who aren't students (first, last, phone).
+VOLUNTEER_STUDENTS = [1, 9]
+VOLUNTEERS = [("Ruth", "Ellison", "(555) 010-7781"), ("Marcus", "Bell", "(555) 010-2394")]
+
+# (days ago, title, body)
+FARM_UPDATES = [
+    (0, "Calving watch this week", "One of the heifers is close to calving. If you're on cow duty, check the "
+     "maternity pen at every visit and call me if she's in labor."),
+    (3, "New feed delivery", "Layer pellets and grower ration were restocked in the feed room. Log every "
+     "feeder refill in My Schedule so the levels on the Nutrition page stay right."),
+    (9, "Biosecurity reminder", "Use the boot dip at each barn door and work from youngest to oldest animals. "
+     "Sick animals are always visited last."),
+]

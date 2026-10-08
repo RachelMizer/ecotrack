@@ -1,9 +1,28 @@
 from django.contrib import admin
 
 from .models import (
-    Animal, Feeder, FeederContent, HealthEvent, Incubator, IncubatorEgg, LocationPing, TemperatureRecord, Treatment,
-    UserProfile, WeightRecord, Zone,
+    Animal, Assignment, Course, FarmUpdate, Feeder, FeederContent, HealthEvent, Incubator, IncubatorEgg, LocationPing,
+    TemperatureRecord, Treatment, UserProfile, WeightRecord, Zone,
 )
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ["user", "role", "volunteer", "phone"]
+    list_filter = ["role", "volunteer"]
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ["name", "section", "term_start", "term_end", "instructor"]
+    filter_horizontal = ["students"]
+
+
+@admin.register(Assignment)
+class AssignmentAdmin(admin.ModelAdmin):
+    list_display = ["task", "assignee", "animal", "feeder", "due_date", "completed_at"]
+    list_filter = ["task", "assignee__profile__role"]
+    date_hierarchy = "due_date"
 
 
 class HealthEventInline(admin.TabularInline):
@@ -55,4 +74,4 @@ class ReadingAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
 
 
-admin.site.register([Zone, HealthEvent, Treatment, LocationPing, UserProfile])
+admin.site.register([Zone, HealthEvent, Treatment, LocationPing, FarmUpdate])

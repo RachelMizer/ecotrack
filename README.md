@@ -38,7 +38,8 @@ npm install
 npm run dev
 ```
 
-Demo login: **rachel / EcoTrack2026!**. Change it before deploying (`/admin/` or `manage.py changepassword rachel`).
+Demo logins: **rachel / EcoTrack2026!** (student) and **instructor / EcoTrack2026!** (instructor). Change both before deploying
+(`manage.py changepassword <username>`). Seeded students and volunteers have no password until an instructor resets one.
 
 Re-running `seed_farm` rebuilds all data relative to today's date. Ages in `dev/animal data` are measured back from
 the day it runs.
@@ -48,13 +49,18 @@ the day it runs.
 | Page | Route | What it shows |
 |---|---|---|
 | Login | `/login` | Chicken background and login form |
-| Dashboard | `/dashboard` | Temperature scatter by day of month, weight-by-age scatters, health, feed and egg tiles. Filter by month, species, group, life stage, animal and health, with a clear-filters button. |
-| Catalog | `/catalog`, `/catalog/cows` … | Cows / Pigs / Chickens buttons, then each animal's photo and stats. Weight and temperature link to history. |
+| Dashboard | `/dashboard` | Instructor's Farm Updates bulletin, then temperature scatter by day of month, weight-by-age scatters, health, feed and egg tiles. Filter by month, species, group, life stage, animal and health, with a clear-filters button. |
+| Catalog | `/catalog`, `/catalog/cows` … | Cows / Pigs / Chickens buttons, then each animal's photo and stats, plus who is assigned to its care. Weight, temperature and care link to history. |
+| Care history | `/catalog/:group/:animal/care` | Every duty assigned for the animal: who did it (student, volunteer, or instructor with the vet), when, and whether it was done |
 | Records | `/catalog/:group/:animal/weights` · `/temperatures` | Filterable table and chart. Weights are weekly from birth; temperatures every 2 days. |
 | Tracker | `/tracker` | Farm map with 6/24/72 h trails. Click an area to zoom into the coops, pens or enclosures; click a dot to open that animal in the catalog. |
 | Nutrition | `/nutrition` | Feeder contents, levels and refill dates, plus vaccinations and medications for every animal |
 | Schedule | `/schedule` | Daily feed and dose plan per animal (or as a run sheet by time) and what's due in the next 21 days |
-| Account | `/account` | User and farm details (editable) |
+| My Schedule | `/my-schedule` | Students and volunteers: their assigned tasks by day, with links to the animal or feeder and a mark-complete button (timestamped) |
+| Classes | `/classes`, `/classes/:id` | Instructors: classes by term, editable class details and rosters, add students; a Summer volunteers tab |
+| Person | `/people/:id` | Instructors: a student's or volunteer's details (editable), responsibility schedule and fulfillment history |
+| Assignments | `/assignments` | Instructors: assign feeder refills, feedings, medications, vaccinations, weights, temperatures and exams |
+| Account | `/account` | User details (editable). Instructors add office location, hours and a message; students and volunteers see their class and instructor. Change password. |
 | Developer's Notes | `/developer-notes` | Frameworks, scripts, files, API and deployment notes (linked in the footer) |
 
 ## Deploy

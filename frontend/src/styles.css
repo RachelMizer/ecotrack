@@ -68,7 +68,7 @@ body {
   line-height: 1.5;
 }
 a { color: var(--teal); }
-button, input, select { font: inherit; color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
 img { max-width: 100%; }
 
 h1, h2.head { font-family: var(--font-head); color: var(--brown); font-weight: 400; line-height: 1.15; }
@@ -125,7 +125,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 2rem 16
 .filters { display: flex; flex-wrap: wrap; align-items: end; gap: .6rem 1rem; margin: 0 0 1rem; }
 .filters label { display: flex; flex-direction: column; gap: .15rem; font-family: var(--font-sub);
   text-transform: uppercase; font-size: .72rem; letter-spacing: .06em; color: var(--bark); }
-select, input[type="date"], input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="search"] {
+select, textarea, input[type="date"], input[type="time"], input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"] {
   border: 1px solid var(--mauve); border-radius: 4px; background: var(--surface);
   padding: .35rem .5rem; font-size: .9rem; min-height: 34px;
 }
@@ -164,7 +164,7 @@ select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible
 /* status pill: icon + label, never color alone */
 .pill { display: inline-flex; align-items: center; gap: .3rem; border-radius: 999px; padding: .05rem .55rem;
   font-size: .78rem; font-weight: 500; white-space: nowrap; }
-.pill.sick, .pill.critical { background: var(--critical-tint); color: var(--critical); }
+.pill.sick, .pill.critical, .pill.overdue { background: var(--critical-tint); color: var(--critical); }
 .pill.recovering, .pill.warning, .pill.scheduled { background: var(--warning-tint); color: var(--warning); }
 .pill.healthy, .pill.good, .pill.completed { background: var(--good-tint); color: var(--good); }
 .pill.active { background: var(--teal-tint); color: #1f5f69; }
@@ -218,3 +218,12 @@ tr:last-child td { border-bottom: 0; }
   .nav .acct { margin-left: 0; }
   main { padding-top: 1.2rem; }
 }
+
+/* page-level tabs (Nutrition, Classes) */
+.page-tabs { display: flex; justify-content: center; gap: 0; margin: 1.5rem 0 1.5rem; border-bottom: 2px solid var(--line); flex-wrap: wrap; }
+.page-tabs button {
+  background: none; border: 0; border-bottom: 3px solid transparent; margin-bottom: -2px; padding: .6rem 1.4rem; cursor: pointer;
+  font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .05em; font-size: 1.05rem; color: var(--green);
+}
+.page-tabs button:hover { color: var(--teal); }
+.page-tabs button[aria-selected="true"] { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }

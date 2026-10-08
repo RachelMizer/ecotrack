@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { ErrorNote, Pager, StatusPill } from '../components/bits'
+import { formatStamp, formatTime } from '../lib/duties'
 import { formatDate, SPECIES, speciesByKey } from '../lib/farm'
 import { useApi } from '../lib/useApi'
 import './Nutrition.css'
@@ -22,6 +23,13 @@ export default function Nutrition() {
   const [area, setArea] = useState('')
   const [f, setF] = useState({ species: '', kind: '', status: '', q: '' })
   const [page, setPage] = useState(1)
+  const { hash } = useLocation()
+
+  // Scroll to a feeder linked from My Schedule (e.g. /nutrition#feeder-3).
+  useEffect(() => {
+    if (!feeders.data || !hash) return
+    document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [feeders.data, hash])
   const set = (k) => (e) => { setF((p) => ({ ...p, [k]: e.target.value })); setPage(1) }
 
   const feederList = (feeders.data || []).filter((fd) => !area || fd.zone_area === area)
@@ -57,7 +65,7 @@ export default function Nutrition() {
       <ErrorNote error={feeders.error} />
       <div className={`grid cols-3 ${feeders.loading ? 'loading' : ''}`}>
         {feederList.map((fd) => (
-          <article key={fd.id} className="card feeder">
+          <article key={fd.id} id={`feeder-${fd.id}`} className={`card feeder ${hash === `#feeder-${fd.id}` ? 'highlight' : ''}`}>
             <h3>{fd.name}</h3>
             <p className="muted small" style={{ margin: '0 0 .6rem' }}>
               {fd.feeder_type} · {fd.zone}<br />Serves: {fd.serves}
@@ -85,6 +93,7 @@ export default function Nutrition() {
             <p className="small" style={{ margin: '.6rem 0 0' }}>
               Refilled {formatDate(fd.last_refilled)} · next refill <b>{formatDate(fd.next_refill)}</b> (every {fd.refill_interval_days} days)
             </p>
+            <RefillDuty duties={fd.duties} />
           </article>
         ))}
       </div>
@@ -149,5 +158,18 @@ export default function Nutrition() {
       </section>
       )}
     </>
+  )
+}
+
+/** Who refilled this feeder last and who's assigned to the next refill. */
+function RefillDuty({ duties }) {
+  const next = duties.find((d) => d.status === 'scheduled')
+  const last = duties.filter((d) => d.completed_at).sort((a, b) => b.completed_at.localeCompare(a.completed_at))[0]
+  if (!next && !last) return null
+  return (
+    <p className="small muted" style={{ margin: '.3rem 0 0' }}>
+      {last && <>Last refilled by {last.assignee_name} ({last.assignee_role}), {formatStamp(last.completed_at)}.<br /></>}
+      {next && <>Next refill assigned to <b>{next.assignee_name}</b> ({next.assignee_role}), {formatDate(next.due_date)}{next.due_time && ` ${formatTime(next.due_time)}`}.</>}
+    </p>
   )
 }

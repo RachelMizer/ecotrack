@@ -5,7 +5,7 @@ const STACK = [
   ['Frontend', 'React 19 · Vite 8', 'Single-page app, built to static files.'],
   ['Backend hosting', 'Railway', 'Runs gunicorn; migrations run on each deploy.'],
   ['Frontend hosting', 'Netlify', 'Serves the Vite build with an SPA redirect rule.'],
-  ['Source control', 'GitHub', 'Repository: github.com/RachelMizer/ecovitals'],
+  ['Source control', 'GitHub', 'Repository: github.com/RachelMizer/ecotrack'],
 ]
 
 const LIBS = [
@@ -28,19 +28,19 @@ const SCRIPTS = [
   ['frontend', 'npm run preview', 'Serve the production build locally.'],
   ['frontend', 'npm run lint', 'Lint the source with oxlint.'],
   ['backend', 'python manage.py migrate', 'Create or update database tables.'],
-  ['backend', 'python manage.py seed_farm', 'Wipe and reseed all farm data (animals, weekly weights, temperatures every 2 days, illnesses, treatments, feeders, 72 h of tracker pings) and create the demo user.'],
-  ['backend', 'python manage.py seed_farm --keep-user', 'Reseed farm data without touching user accounts.'],
+  ['backend', 'python manage.py seed_farm', 'Wipe and reseed all farm data (animals, weekly weights, temperatures every 2 days, illnesses, treatments, feeders, 72 h of tracker pings), classes, volunteers, assignments and farm updates. Creates the demo student (rachel) and instructor (instructor) if missing; existing passwords are never reset.'],
+  ['backend', 'python manage.py seed_farm --keep-user', 'Same, but leaves the demo accounts’ names and details as they are.'],
   ['backend', 'python manage.py runserver', 'Start the API on http://localhost:8000.'],
   ['backend', 'python manage.py createsuperuser', 'Create an admin login for /admin/.'],
 ]
 
 const FILES = [
-  ['backend/farm/models.py', 'Zone, Animal, WeightRecord, TemperatureRecord, HealthEvent, Treatment, LocationPing, Feeder, FeederContent, UserProfile.'],
-  ['backend/farm/views.py', 'API endpoints (auth, animals, readings, summary, tracking, feeders, treatments, schedule).'],
+  ['backend/farm/models.py', 'Zone, Animal, WeightRecord, TemperatureRecord, HealthEvent, Treatment, LocationPing, Feeder, FeederContent, Incubator, IncubatorEgg, UserProfile (role: Student, Volunteer or Instructor), Course (class + roster), Assignment, FarmUpdate.'],
+  ['backend/farm/views.py', 'API endpoints (auth, animals, readings, summary, tracking, feeders, treatments, schedule, classes, people, volunteers, assignments, farm updates). Instructor-only endpoints use the IsInstructor permission.'],
   ['backend/farm/schedule.py', 'Feeding and medication rules by species, life stage, sex and fertility status.'],
   ['backend/farm/management/commands/farm_data.py', 'Source farm data: animals, illnesses, treatments, feeders, map zones.'],
   ['backend/farm/management/commands/seed_farm.py', 'Seed script: Gompertz growth curves, age-adjusted temperature baselines with fever episodes, random-walk tracker trails.'],
-  ['frontend/src/pages/*', 'One file per page: Login, Dashboard, Catalog, CatalogGroup, AnimalRecords, Tracker, Nutrition, Schedule, Account, DevNotes.'],
+  ['frontend/src/pages/*', 'One file per page: Login, Dashboard, Catalog, CatalogGroup, AnimalRecords, AnimalCare, Tracker, Nutrition, Schedule, MySchedule, Classes, ClassDetail, Person, Assignments, Account, DevNotes.'],
   ['frontend/src/lib/*', 'API client, auth context, species vocabulary and normal temperature ranges.'],
 ]
 
@@ -49,6 +49,12 @@ const ENDPOINTS = [
   'GET /api/animals/<slug>/', 'GET /api/animals/<slug>/weights/?start=&end=', 'GET /api/animals/<slug>/temperatures/?start=&end=',
   'GET /api/readings/?kind=temperature|weight&start=&end=&species=', 'GET /api/summary/', 'GET /api/zones/',
   'GET /api/tracking/?hours=', 'GET /api/feeders/', 'GET /api/treatments/?species=&kind=', 'GET /api/schedule/?date=&species=',
+  'POST /api/account/password/', 'GET /api/account/classes/', 'GET /api/animals/<slug>/care/', 'GET|POST /api/updates/',
+  'DELETE /api/updates/<id>/', 'GET|POST /api/classes/', 'GET|PATCH /api/classes/<id>/', 'POST /api/classes/<id>/students/',
+  'DELETE /api/classes/<id>/students/<user>/', 'GET /api/people/?role=&volunteer=', 'GET|PATCH /api/people/<id>/',
+  'POST /api/people/<id>/reset-password/', 'POST /api/volunteers/', 'DELETE /api/volunteers/<id>/',
+  'GET|POST /api/assignments/?start=&end=&task=&assignee=&status=', 'PATCH|DELETE /api/assignments/<id>/',
+  'POST /api/assignments/<id>/complete/',
 ]
 
 function Table({ head, rows, code = [] }) {
@@ -101,6 +107,9 @@ export default function DevNotes() {
         <li>Weight history follows a Gompertz growth curve from a breed-typical birth weight to the recorded current weight, with small weekly noise and dips during illness.</li>
         <li>Temperatures use each species' normal range from the Info files (young animals run warmer). Illness episodes add a fever curve.</li>
         <li>Map coordinates are in a 1000 × 650 farm grid. Tracker pings are generated every 30 minutes for the last 72 hours. Chickens roost in their coop overnight, and the sow visits the farrowing barn to nurse.</li>
+        <li>Roles: <b>Student</b> (the original account type), <b>Volunteer</b> (same access as a student) and <b>Instructor</b>. Instructors see Classes (rosters and the summer volunteer list) and Assignments; students and volunteers see My Schedule. Roster students and volunteers get a login (their email) with a temporary password the instructor shares.</li>
+        <li>Semesters default to 16 weeks (spring from mid-January, fall from late August). Summer runs June 1 to August 15: volunteers help with feeder refills, special feedings and weights, while medications, vaccinations, temperatures and exams are done by a veterinarian with the instructor (the API enforces this).</li>
+        <li>Completing a weights or temperatures task can record the reading in the animal's history; completing a feeder refill tops the feeder up and updates its last-refilled date.</li>
         <li>Feeding rules in <code>schedule.py</code> follow common extension-service guidance. All drugs and doses are illustrative and need veterinary confirmation.</li>
       </ul>
 

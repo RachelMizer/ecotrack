@@ -1,0 +1,87 @@
+New Additions:
+
+NEW ROLE DEFINITIONS:
+1) Current role is just a user. That should be changed to "Student".
+2) New role: "Volunteer" (Same permissions and role-based access as a Student, just a different designation)
+3) New role: "Instructor"
+
+NEW PAGES:
+1) Instructor Account
+	Information Collected:
+		- Instructor Name
+		- Instructor Email
+		- Instructor Office Location and Hours
+		- Instructor Message / Note / Description
+
+2) Class Page (Available/visible only to Instructors)
+[ On this page, the Instructor should see all classes that have been created. Clicking a class should take the Instructor to the class' student list. Each student name should be clickable and the student's individual page should pull up when the student's name is clicked. ]
+
+Class Page Functions:
+- Create New Class
+	Information Collected:
+		Class Name
+		Section
+		Description (optional)
+		Class Term Start Date
+		Class Term End Date
+		[ Class information should be editable/saveable by the instructor. ]
+	- Create New Roster (Creates Roster for that Class / Section)
+		- Add Student
+			Information Collected:
+			Student First Name
+			Student Last Name
+			Student Email
+			[ Student information should be editable/saveable by the instructor. ]
+	- Individual Class Page View
+		Functions:
+			- Add New Student
+		Presents Information:
+			List of students
+	- Individual Student Page View
+		Presents Information:
+			Student Information at the top
+			Student Responsibility Schedule
+			Student Responsibility Fulfillment History
+			[ Student information should be editable/saveable by the instructor. ]
+- Volunteer Page
+	[ This is for summer volunteers. Volunteers *can* be students, but don't have to be.
+	This page should display a list of any volunteers working the farm during the summer when there
+	are no veterinary science classes being held. ]
+	- Add Volunteer (student or non-student)
+		Information Collected:
+			First Name
+			Last Name
+			Email
+			Phone Number (optional)
+			[ Volunteer information should be editable/saveable by the instructor. ]
+	- Individual Volunteer Page View
+		Presents Information:
+			Volunteer Information at the top
+			Volunteer Responsibility Schedule
+			Volunteer Responsibility Fulfillment History
+3) Feeding / Vaccination Assignment (Available/visible only to Instructors)
+	[ This page should allow the instructor to assign medication
+	administration, feeder refilling, and other farm duties to a student or volunteer. ]
+
+	Task types:
+		1) Refill feeder (For feeders in enclosures, pens and coops), Allow instructor to choose which feeder a student/volunteer needs to fill. During the summer, volunteers help the
+		instructor with this task.
+		2) Special Feeding (for animals receiving special food) - During the summer, volunteers help the instructor with this task.
+		3) Administer Medication (for treating sick animals) - During the summer, a veterinarian performs these exams in conjunction with the instructor.
+		4) Administer Vaccination (for vaccinating young and developing
+		animals) - During the summer, a veterinarian performs these exams in conjunction with the instructor.
+		5) Take Chicken/Cow/Pig Weights - During the summer, volunteers help the instructor with this task.
+		6) Take Chicken/Cow/Pig Temperatures - During the summer, a veterinarian performs these exams in conjunction with the instructor.
+		7) Routine Examination (routine animal exam) During the summer, a veterinarian performs these exams in conjunction with the instructor.
+		8) Special Examination (for animals that need review for their health updates) During the summer, a veterinarian performs these exams in conjunction with the instructor.
+
+[ The student/volunteer assignments should be visible on the animal's card and in their history. Semesters as a default are 16 weeks during spring and fall seasons. During the summer season, cards and histories should list some students and some volunteers. ]
+
+4) My Schedule (Available to Students Only)
+	[ This page should display the students/volunteers that have scheduled tasks. Clicking a task should take them to the animal's page receiving that treatment/vaccination, or it should
+	link to the feeder. There should be a mechanism on their schedule for them to mark the task complete. A timestamp should be added to the task completion. Histories should reflect
+	this. ]
+
+ADDITIONS:
+1) When a student or volunteer clicks on their account page, there should be a new section that displays class and instructor information that has been collected in above pages
+2) To the dashboard, above the "Herd Overview" section, there should be a small bulletin section where the Instructor's 'Farm Updates' display.

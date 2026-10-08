@@ -8,11 +8,5 @@
 .meter-fill.critical { background: var(--critical); }
 .feed-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .2rem .8rem; font-size: .8rem; color: var(--ink-2); }
 .feed-meta b { color: var(--ink); }
-
-.page-tabs { display: flex; justify-content: center; gap: 0; margin: 1.5rem 0 1.5rem; border-bottom: 2px solid var(--line); flex-wrap: wrap; }
-.page-tabs button {
-  background: none; border: 0; border-bottom: 3px solid transparent; margin-bottom: -2px; padding: .6rem 1.4rem; cursor: pointer;
-  font-family: var(--font-sub); text-transform: uppercase; letter-spacing: .05em; font-size: 1.05rem; color: var(--green);
-}
-.page-tabs button:hover { color: var(--teal); }
-.page-tabs button[aria-selected="true"] { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+.card.feeder.highlight { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-tint); }
+.card.feeder { scroll-margin-top: 1rem; }

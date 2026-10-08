@@ -316,9 +316,111 @@ class IncubatorEgg(models.Model):
         return self.set_date + timedelta(days=self.incubator.incubation_days)
 
 
+class Role(models.TextChoices):
+    STUDENT = "student", "Student"
+    VOLUNTEER = "volunteer", "Volunteer"  # same access as a student, different designation
+    INSTRUCTOR = "instructor", "Instructor"
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    role = models.CharField(max_length=12, choices=Role.choices, default=Role.STUDENT)
     farm_name = models.CharField(max_length=120, blank=True)
-    role = models.CharField(max_length=60, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     farm_address = models.CharField(max_length=200, blank=True)
+    # Instructor details, shown to their students and volunteers.
+    office_location = models.CharField(max_length=120, blank=True)
+    office_hours = models.CharField(max_length=200, blank=True)
+    message = models.TextField(blank=True)
+    # Summer volunteer list. A student can also volunteer.
+    volunteer = models.BooleanField(default=False)
+    supervisor = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="volunteers",
+        help_text="Instructor who added this volunteer",
+    )
+
+    @property
+    def is_instructor(self):
+        return self.role == Role.INSTRUCTOR
+
+
+def season_of(day):
+    """Vet-science classes run in spring and fall. Summer (June 1 to August 15) is volunteer season."""
+    if day.month in (6, 7) or (day.month == 8 and day.day <= 15):
+        return "summer"
+    return "spring" if day.month < 6 else "fall"
+
+
+class Course(models.Model):
+    """A class section taught by an instructor. Its roster is the set of enrolled students."""
+
+    name = models.CharField(max_length=120)
+    section = models.CharField(max_length=20)
+    description = models.TextField(blank=True)
+    term_start = models.DateField()
+    term_end = models.DateField(help_text="Semesters default to 16 weeks")
+    instructor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="courses_taught")
+    students = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="courses")
+
+    class Meta:
+        ordering = ["-term_start", "name", "section"]
+
+    def __str__(self):
+        return f"{self.name} ({self.section})"
+
+
+class Assignment(models.Model):
+    """A farm duty an instructor assigns to a student or volunteer."""
+
+    class Task(models.TextChoices):
+        REFILL_FEEDER = "refill_feeder", "Refill feeder"
+        SPECIAL_FEEDING = "special_feeding", "Special feeding"
+        MEDICATION = "medication", "Administer medication"
+        VACCINATION = "vaccination", "Administer vaccination"
+        WEIGHTS = "weights", "Take weights"
+        TEMPERATURES = "temperatures", "Take temperatures"
+        ROUTINE_EXAM = "routine_exam", "Routine examination"
+        SPECIAL_EXAM = "special_exam", "Special examination"
+
+    # Volunteers help with these; in summer the rest are done by a veterinarian with the instructor.
+    VOLUNTEER_TASKS = {Task.REFILL_FEEDER, Task.SPECIAL_FEEDING, Task.WEIGHTS}
+
+    task = models.CharField(max_length=20, choices=Task.choices)
+    assignee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="assignments")
+    assigned_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="assignments_made"
+    )
+    animal = models.ForeignKey(Animal, null=True, blank=True, on_delete=models.CASCADE, related_name="assignments")
+    feeder = models.ForeignKey(Feeder, null=True, blank=True, on_delete=models.CASCADE, related_name="assignments")
+    treatment = models.ForeignKey(
+        Treatment, null=True, blank=True, on_delete=models.SET_NULL, related_name="assignments"
+    )
+    due_date = models.DateField()
+    due_time = models.TimeField(null=True, blank=True)
+    notes = models.CharField(max_length=300, blank=True)
+    veterinarian = models.CharField(max_length=120, blank=True, help_text="Summer vet who performs the task")
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    completion_note = models.CharField(max_length=300, blank=True)
+
+    class Meta:
+        ordering = ["due_date", "due_time", "id"]
+        indexes = [models.Index(fields=["assignee", "due_date"])]
+
+    @property
+    def status(self):
+        if self.completed_at:
+            return "completed"
+        return "overdue" if self.due_date < date.today() else "scheduled"
+
+
+class FarmUpdate(models.Model):
+    """A bulletin post from an instructor, shown on the dashboard."""
+
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="farm_updates")
+    title = models.CharField(max_length=120)
+    body = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]

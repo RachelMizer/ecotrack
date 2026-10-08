@@ -32,7 +32,7 @@ export default function Login() {
         <form className="login-card" onSubmit={onSubmit}>
           <img src="/images/logo.png" alt="EcoTrack" className="login-logo" />
           <label>
-            Username
+            Username or email
             <input type="text" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
           </label>
           <label>
