@@ -79,11 +79,22 @@ No new Python or npm packages, so `pip install` and `npm install` aren't needed.
   - Seasons: 16-week spring and fall semesters; summer is June 1 to August 15, when volunteers do refills, special feedings and weights and a vet does the rest with the instructor
   - Seed: 2 current classes + 1 previous, 16 students, 5 volunteers (2 non-students), ~1,300 assignments across spring, summer and fall, 3 farm updates
 
+### 2026-10-09 (`C:\EcoTrack`)
+- Live site: changed the instructor password and gave demo student Maya Castillo a login for reviewers (both recorded in `logs_and_passes.txt`). Django's similarity check rejects passwords too close to the account email
+- Photos: 30 of 43 animal photos added to `frontend/public/animals/`, square 800 x 800 crops of the breed photos in `dev/img` (not `dev/img/stock`), reused across animals of the same breed. Teen chickens and chicks still show the placeholder (see `images_needed.txt`)
+- Tracker: every animal is shut in from 8 pm to 6 am, in the seeded trails and the live position. Cows sleep in new **Upper Barn** and **Lower Barn**, the boar in a **Boar Shed**, and the nursing sow in the farrowing barn (`Animal.night_zone`, `Animal.range_at`). Migration `0004_night_shelters` adds the shelters and trims the runs on an already-seeded database, so no reseed is needed (only the old stored trails won't show night trips until one)
+- Tracker map: zone name tags sit just outside each run or yard, or above a barn, where no dot can reach them. Pond moved out of the cows' range
+- Rewrote git history to clean up commit messages and force-pushed `main`. Any other clone must re-clone or `git fetch` + `git reset --hard origin/main` instead of pulling. Local branch `backup-before-rewrite` holds the old history until it's deleted
+- Pushing: the GitHub CLI's active account is `rmizer`, which can't push to `RachelMizer/ecotrack`. Run `gh auth switch --user RachelMizer` and `gh auth setup-git` to fix it for good
+- `dev/cover_letter.txt` added to `.gitignore` (holds live logins)
+
 ---
 
 ## Next Up
-- [ ] Add 44 photos listed in `images_needed.txt` (login chicken background + one per animal)
+- [ ] Deploy migration `0004_night_shelters` to Railway (`railway redeploy --from-source`; the `Procfile` runs `migrate`). As of 2026-10-09 the live API still lacks the barns
+- [ ] Photos still needed: 8 teen chickens, 5 chicks, and an egg image (the Incubator page has no photo slot yet)
 - [ ] Add licensed Milky Vintage / A Pompadour font files to `frontend/public/fonts/`
 - [ ] Review `medication_suggestions.md` and name the unnamed heifer calf
 - [x] Deploy API to Railway (Postgres) and web to Netlify (code is on GitHub; run `migrate` and `seed_farm` on Railway after the first deploy)
+- [ ] Change the live `rachel` password (it is the Django superuser and `EcoTrack2026!` is public in the repo)
 - [ ] Turn Railway auto-deploy back on (service Settings → Source) so pushes to `main` redeploy the API
