@@ -10,6 +10,10 @@ class Species(models.TextChoices):
     PIG = "pig", "Pig"
 
 
+# Every animal is shut in from 8 pm to 6 am (local time).
+NIGHT_START, NIGHT_END = 20, 6
+
+
 class Zone(models.Model):
     """A named place on the farm map (coop, pen, enclosure, barn...)."""
 
@@ -69,6 +73,10 @@ class Animal(models.Model):
     birth_date = models.DateField()
     fertility_status = models.CharField(max_length=20, choices=Fertility.choices)
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT, related_name="animals")
+    # Where the animal is shut in overnight. Blank means its own zone (a coop, brooder or barn).
+    night_zone = models.ForeignKey(
+        Zone, null=True, blank=True, on_delete=models.PROTECT, related_name="night_animals"
+    )
     egg_count_mtd = models.PositiveIntegerField(null=True, blank=True)
     dam = models.ForeignKey(
         "self", null=True, blank=True, on_delete=models.SET_NULL, related_name="offspring"
@@ -82,6 +90,16 @@ class Animal(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.get_species_display()})"
+
+    def range_at(self, hour):
+        """The rectangle (x, y, w, h) the animal can be in at this local hour: its daytime
+        run or yard, or its shelter during the night hours."""
+        z = self.zone
+        if hour >= NIGHT_START or hour < NIGHT_END:
+            z = self.night_zone or z
+        elif z.roam_x is not None:
+            return (z.roam_x, z.roam_y, z.roam_width, z.roam_height)
+        return (z.x, z.y, z.width, z.height)
 
     @property
     def age_days(self):

@@ -17,15 +17,26 @@ Offsets are in days relative to the day the seed runs ("T").
 # ---------------------------------------------------------------------------
 ZONES = [
     # name, area, kind, (x, y, w, h), roam (x, y, w, h) or None
-    ("Longbourn Coop", "coops", "coop", (70, 70, 70, 46), (50, 55, 160, 115)),
-    ("Orchard Coop", "coops", "coop", (240, 70, 70, 46), (220, 55, 150, 115)),
-    ("Frat House Coop", "coops", "coop", (70, 205, 70, 46), (50, 190, 150, 95)),
+    # Runs and yards stop short of each other so the zone name tags below them stay clear of animals.
+    ("Longbourn Coop", "coops", "coop", (70, 70, 70, 46), (50, 55, 160, 110)),
+    ("Orchard Coop", "coops", "coop", (240, 70, 70, 46), (220, 55, 150, 110)),
+    ("Frat House Coop", "coops", "coop", (70, 205, 70, 46), (50, 195, 150, 90)),
     ("Neverland Brooder", "coops", "brooder", (250, 215, 70, 44), None),
-    ("Cloverfield Pasture", "pens", "pasture", (45, 345, 325, 175), (55, 355, 305, 155)),
+    ("Cloverfield Pasture", "pens", "pasture", (45, 345, 325, 175), (55, 355, 225, 140)),
+    ("Boar Shed", "pens", "barn", (295, 365, 65, 45), None),
     ("Cloverfield Farrowing Barn", "pens", "barn", (130, 545, 150, 70), None),
-    ("Upper Enclosure", "enclosures", "enclosure", (430, 40, 530, 255), (445, 55, 500, 225)),
-    ("Lower Enclosure", "enclosures", "enclosure", (430, 330, 530, 285), (445, 345, 500, 255)),
+    ("Upper Enclosure", "enclosures", "enclosure", (430, 40, 530, 255), (445, 55, 415, 225)),
+    ("Upper Barn", "enclosures", "barn", (875, 55, 75, 55), None),
+    ("Lower Enclosure", "enclosures", "enclosure", (430, 330, 530, 285), (445, 345, 415, 255)),
+    ("Lower Barn", "enclosures", "barn", (875, 345, 75, 55), None),
 ]
+
+# Night shelters for animals that range outdoors (8 pm to 6 am). Chickens roost in their own coop.
+NIGHT_ZONES = {
+    "Upper Enclosure": "Upper Barn",
+    "Lower Enclosure": "Lower Barn",
+    "Cloverfield Pasture": "Boar Shed",
+}
 
 # ---------------------------------------------------------------------------
 # Animals

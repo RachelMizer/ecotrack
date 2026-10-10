@@ -161,6 +161,12 @@ class Command(BaseCommand):
                 )
                 a._target_weight = weight
                 animals[name] = a
+        for a in animals.values():
+            # the nursing sow sleeps in the farrowing barn with her piglets
+            shelter = "Cloverfield Farrowing Barn" if a.name == D.PIGLET_DAM else D.NIGHT_ZONES.get(a.zone.name)
+            if shelter:
+                a.night_zone = zones[shelter]
+                a.save(update_fields=["night_zone"])
         dam = animals[D.PIGLET_DAM]
         for a in animals.values():
             if a.species == "pig" and a.type_label.endswith("Piglet"):
@@ -253,15 +259,12 @@ class Command(BaseCommand):
 
     # ----------------------------------------------------------------------- tracking
     def seed_tracking(self, animals):
-        zones = {z.id: z for z in Zone.objects.all()}
         barn = Zone.objects.get(name="Cloverfield Farrowing Barn")
         now = timezone.now().replace(minute=0, second=0, microsecond=0)
         steps = TRACK_HOURS * 60 // TRACK_STEP_MIN
         pings = []
         for a in animals.values():
-            z = zones[a.zone_id]
-            home = (z.x, z.y, z.width, z.height)
-            roam = (z.roam_x, z.roam_y, z.roam_width, z.roam_height) if z.roam_x is not None else home
+            roam = a.range_at(12)
             px = roam[0] + roam[2] * self.rng.random()
             py = roam[1] + roam[3] * self.rng.random()
             stride = {"chicken": 6, "cow": 14, "pig": 9}[a.species]
@@ -270,9 +273,7 @@ class Command(BaseCommand):
             for s in range(steps + 1):
                 ts = now - timedelta(minutes=TRACK_STEP_MIN * (steps - s))
                 hour = timezone.localtime(ts).hour
-                box = roam
-                if a.species == "chicken" and (hour >= 20 or hour < 6):
-                    box = home  # chickens roost in the coop overnight
+                box = a.range_at(hour)  # shut in overnight
                 if a.name == D.PIGLET_DAM and hour % 3 == 0:
                     box = (barn.x, barn.y, barn.width, barn.height)  # sow visits piglets to nurse
                 px += self.rng.gauss(0, stride)

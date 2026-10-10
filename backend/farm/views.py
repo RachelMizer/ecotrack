@@ -217,13 +217,11 @@ def live_position(animal, x, y, now):
     Stands in for real tracker hardware so the map moves between refreshes. Every
     viewer gets the same position for the same moment, and nothing is saved.
     """
-    z = animal.zone
-    box = (z.roam_x, z.roam_y, z.roam_width, z.roam_height) if z.roam_x is not None else (z.x, z.y, z.width, z.height)
-    hour = timezone.localtime(now).hour
-    if animal.species == "chicken" and (hour >= 20 or hour < 6):
-        box = (z.x, z.y, z.width, z.height)  # roosting in the coop overnight
+    bx, by, bw, bh = animal.range_at(timezone.localtime(now).hour)  # in a coop or barn overnight
     rng = random.Random(animal.id)
+    spot = rng.uniform(0.2, 0.8), rng.uniform(0.2, 0.8)  # where it settles if the last ping is outside the range
     reach = LIVE_STRIDE[animal.species] * (0.4 if animal.health_status == Animal.Health.SICK else 1)
+    reach = min(reach, bw / 3, bh / 3)  # shuffle around inside a small barn instead of pinning to its walls
     t = now.timestamp()
 
     def wave():
@@ -231,8 +229,9 @@ def live_position(animal, x, y, now):
         a, b = rng.uniform(0, math.tau), rng.uniform(0, math.tau)
         return 0.65 * math.sin(math.tau * t / slow + a) + 0.35 * math.sin(math.tau * t / fast + b)
 
-    bx, by, bw, bh = box
     clamp = lambda v, lo, size: min(max(v, lo + 2), lo + size - 2)
+    if not (bx <= x <= bx + bw and by <= y <= by + bh):  # shut in (or let out) since the last ping
+        x, y = bx + bw * spot[0], by + bh * spot[1]
     cx, cy = clamp(x, bx, bw), clamp(y, by, bh)
     return round(clamp(cx + reach * wave(), bx, bw), 1), round(clamp(cy + reach * wave(), by, bh), 1)
 
@@ -251,7 +250,7 @@ def tracking(request):
     tracks = {}
     for p in pings.values_list("animal_id", "timestamp", "x", "y"):
         tracks.setdefault(p[0], []).append([p[1], p[2], p[3]])
-    animals = Animal.objects.select_related("zone").filter(id__in=tracks.keys())
+    animals = Animal.objects.select_related("zone", "night_zone").filter(id__in=tracks.keys())
     now = timezone.now()
     for a in animals:
         _, x, y = tracks[a.id][-1]

@@ -75,7 +75,7 @@ export default function Tracker() {
   return (
     <>
       <h1>Farm Tracker</h1>
-      <p className="tagline">Live tracker positions and movement trails. Click an area to zoom in, or a dot to open that animal's profile.</p>
+      <p className="tagline">Live tracker positions and movement trails. Animals are shut in their coops and barns from 8 pm to 6 am. Click an area to zoom in, or a dot to open that animal's profile.</p>
 
       <div className="filters" role="group" aria-label="Map controls">
         <div className="segmented" role="group" aria-label="Map area">
@@ -119,7 +119,7 @@ export default function Tracker() {
           <path d="M402 0 L402 650" stroke="#d8c8b2" strokeWidth="16" />
           <path d="M0 315 L402 315" stroke="#d8c8b2" strokeWidth="12" />
           {/* pond + trees (decoration) */}
-          <ellipse cx="890" cy="235" rx="48" ry="26" fill="#bfdde2" stroke="#9cc6cd" />
+          <ellipse cx="905" cy="222" rx="40" ry="24" fill="#bfdde2" stroke="#9cc6cd" />
           {[[330, 560], [355, 600], [310, 610], [980, 320], [20, 320]].map(([x, y]) => (
             <circle key={`${x}${y}`} cx={x} cy={y} r="11" fill="#9cb67f" stroke="#86a268" />
           ))}
@@ -158,15 +158,19 @@ export default function Tracker() {
               strokeWidth={1.5 * scale} strokeLinejoin="round" pointerEvents="none" />
           ))}
 
-          {/* zone name tags, drawn above trails so they stay readable */}
+          {/* zone name tags, drawn above trails and placed where no dot can reach: just below
+              the run or yard, or just above a coop, barn or brooder that has none */}
           {(zones.data || []).map((z) => {
             const fs = 11 * Math.max(scale, 0.55)
-            const ty = z.kind === 'pasture' || z.kind === 'enclosure' ? z.y + z.height - 8 * scale : z.y - 5 * scale
+            const roam = z.roam_x != null
+            const cx = roam ? z.roam_x + z.roam_width / 2 : z.x + z.width / 2
+            const gap = 8 * scale // a dot (radius 5.5 plus its outline) never reaches the tag
+            const ty = roam ? z.roam_y + z.roam_height + gap + fs * 0.95 : z.y - gap - fs * 0.4
             const w = z.name.length * fs * 0.56 + fs
             return (
               <g key={`tag-${z.slug}`} className="zone-tag" pointerEvents="none">
-                <rect x={z.x + z.width / 2 - w / 2} y={ty - fs * 0.95} width={w} height={fs * 1.35} rx={fs * 0.3} />
-                <text x={z.x + z.width / 2} y={ty} textAnchor="middle" fontSize={fs} className="zone-label">{z.name}</text>
+                <rect x={cx - w / 2} y={ty - fs * 0.95} width={w} height={fs * 1.35} rx={fs * 0.3} />
+                <text x={cx} y={ty} textAnchor="middle" fontSize={fs} className="zone-label">{z.name}</text>
               </g>
             )
           })}
