@@ -7,6 +7,13 @@ Drop each file at the path shown and the site picks it up automatically. There i
 code change to make. Until a file exists, a striped "Photo needed" square is shown
 (or a brand-colour gradient on the login page).
 
+STATUS (2026-10-09): 30 of 43 animal photos are filled with cropped, reused breed photos
+from dev/img (one source photo shared by several animals). Still needed:
+  - Teen chickens (8): daisy, harry, iris, petunia, poppy, ron, rose, violet
+  - Chicks (5): john, michael, moira, peter, wendy
+  - Incubator eggs: no photo slot exists yet (eggs show no image)
+Replacing any file in frontend/public/animals with an individual photo works the same way.
+
 1. LOGIN BACKGROUND (1)
    frontend/public/images/login-chickens.jpg
    Chickens scene, landscape, at least 1920 x 1080. The centre is covered by the login card.
