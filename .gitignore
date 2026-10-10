@@ -17,6 +17,7 @@ Thumbs.db
 
 # Private credentials (never commit)
 dev/logs_and_passes.txt
+dev/cover_letter.txt
 
 # Licensed stock photo originals (Adobe Stock); only web-sized copies are committed
 dev/img/
